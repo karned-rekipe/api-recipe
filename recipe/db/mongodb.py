@@ -21,9 +21,7 @@ class Mongodb:
                                                                                     "&w=majority")
 
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        print(current_dir)
         pem_path = os.path.join(current_dir, '../../env', 'recipe.pem')
-        print(pem_path)
 
         logging.info("Connecting to MongoDB.")
         self.client = MongoClient(uri,
