@@ -1,0 +1,39 @@
+###
+
+GET http://{{host}}:{{port}}/{{base}}/
+Accept: application/json
+
+###
+
+GET http://{{host}}:{{port}}/{{base}}/?label=Jo
+Accept: application/json
+
+###
+
+GET http://{{host}}:{{port}}/{{base}}/01HGNBM2PGJZQXAPSHYSGQ4ZG2
+Accept: application/json
+
+###
+
+POST http://{{host}}:{{port}}/{{base}}/
+Content-Type: application/json
+
+{
+  "label": "Aurélie"
+}
+
+###
+
+PATCH http://{{host}}:{{port}}/{{base}}/01HF9YNK6MD50JVGT25KQ099KJ
+Content-Type: application/json
+
+{
+  "label": "Killian KOPO"
+}
+
+###
+
+DELETE http://{{host}}:{{port}}/{{base}}/01HF9YNK6GD50JVGT25KQ099KJ
+Accept: application/json
+
+###
