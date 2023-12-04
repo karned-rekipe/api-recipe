@@ -19,8 +19,8 @@ def get_all(_id: str, label: str) -> list[Recipe]:
 
     if recipes_data is None:
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail={
+            status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail = {
                 "message": "An error occurred while get list of recipes",
                 "doc": "http://127.0.0.1:8000/v5/recipe/docs#/Recipe/Recipes_list_v5_recipe__get"
             })
@@ -35,8 +35,8 @@ def get_by_id(_id: str) -> Recipe:
 
     if recipe is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail={
+            status_code = status.HTTP_404_NOT_FOUND,
+            detail = {
                 "message": f"Recipe '{_id}' not found",
                 "doc": "http://127.0.0.1:8000/v5/recipe/docs#/Recipe/Get_a_recipe_v5_recipe__id__get"
             })
@@ -51,8 +51,8 @@ def create(payload: ModelRecipe):
 
     if recipe_id is None:
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail={
+            status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail = {
                 "message": "Sorry, something happen during the recipe creation"
             }
         )
@@ -67,8 +67,8 @@ def update(payload: dict, _id: str):
 
     if recipe_update is None:
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail={
+            status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail = {
                 "message": "Sorry, something happen during the recipe update"
             }
         )

@@ -24,8 +24,8 @@ class Recipe:
             self.end: datetime = recipe.get('end')
         else:
             raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail={
+                status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail = {
                     "message": "Invalid recipe type. Expected ModelRecipe or dict."
                 }
             )

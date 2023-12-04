@@ -3,9 +3,9 @@ api = 'recipe'
 api_v = '5'
 
 # Mongo DB config
-mongo_instance_name = 'v1'
-mongo_instance_code = 'z3x7gm9'
-mongo_database = 'testDB'
+mongo_instance_name = 'v5'
+mongo_instance_code = 'y7gf7pr'
+mongo_database = 'recipe'
 
 # responses
 responses_pattern = {
@@ -75,4 +75,3 @@ responses_healthcheck = responses_default.copy()
 responses_healthcheck[200] = responses[200]
 tmsg = 'API /v' + api_v + '/' + api + ' is LIVE!'
 responses_healthcheck[200]['content']['application/json']['schema']['properties']['message']['example'] = tmsg
-

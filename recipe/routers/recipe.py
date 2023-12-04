@@ -4,7 +4,7 @@ from fastapi import APIRouter, status, Query, Body
 from icecream import ic
 from recipe.config import *
 from recipe.schemas.recipe import (SchemaRecipeCreate, SchemaRecipeId, SchemaRecipeRead,
-                                       SchemaRecipeUpdate, ModelRecipeComputeFields)
+                                   SchemaRecipeUpdate, ModelRecipeComputeFields)
 from recipe.functions.recipe import *
 
 router = APIRouter()
@@ -12,12 +12,12 @@ collection = 'recipe'
 
 
 @router.get("/healthchecker/",
-            name="Simple healthcheck",
-            summary="Simple healthcheck",
-            description="Simple healthcheck",
-            response_description="Confirmation message",
-            responses=responses_healthcheck,
-            status_code=status.HTTP_200_OK)
+            name = "Simple healthcheck",
+            summary = "Simple healthcheck",
+            description = "Simple healthcheck",
+            response_description = "Confirmation message",
+            responses = responses_healthcheck,
+            status_code = status.HTTP_200_OK)
 async def healthcheck():
     """ Healthcheck
     """

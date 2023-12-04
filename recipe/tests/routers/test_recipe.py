@@ -62,5 +62,6 @@ def test_delete_recipe():
     response = requests.get(f"{API_BASE_URL}/" + ulid_test + "/")
     assert response.status_code == 404
 
+
 if __name__ == "__main__":
     pytest.main()

@@ -63,7 +63,6 @@ app.add_middleware(
     allow_headers = ["*"],
 )
 
-
 app.include_router(recipe.router, tags = ["user"], prefix = "/v" + api_v + "/" + api)
 
 if __name__ == "__main__" and os.environ.get("ENVIRONMENT") != "PRODUCTION":
