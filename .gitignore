@@ -1,6 +1,5 @@
 .idea
 .pytest_cache
 venv
-*.pem
 tests/.pytest_cache
 .vscode
