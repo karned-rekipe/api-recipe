@@ -36,16 +36,12 @@ class ModelRecipeDatabaseFields(BaseModel):
     start: Optional[datetime] = Field(
         None,
         description = "The date when recipe start to be a recipe",
-        example = "2023-11-17 09:00:00",
-        min_length = 0,
-        max_length = 19
+        example = "2023-11-17 09:00:00"
     )
     end: Optional[datetime] = Field(
         None,
         description = "The date when recipe stop to be a recipe",
-        example = "2023-11-17 09:00:00",
-        min_length = 0,
-        max_length = 19
+        example = "2023-11-17 09:00:00"
     )
 
 
