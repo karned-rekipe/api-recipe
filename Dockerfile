@@ -10,5 +10,7 @@ ENV PORT 1234
 
 RUN pip install --no-cache-dir -r requirements.txt
 
+ENV PBL_JWKS_REMOTE_URI=https://api.pebble.solutions/keys/jwks.json
+
 # As an example here we're running the web service with one worker on uvicorn.
 CMD exec uvicorn recipe.main:app --host 0.0.0.0 --port ${PORT} --workers 1
