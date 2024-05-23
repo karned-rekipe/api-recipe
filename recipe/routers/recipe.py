@@ -21,7 +21,7 @@ collection = 'recipe'
 async def healthcheck():
     """ Healthcheck
     """
-    message = 'API /v' + api_v + '/' + api + ' is LIVE!'
+    message = 'API /' + api + ' is LIVE!'
     return {"message": message}
 
 

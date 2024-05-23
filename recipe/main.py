@@ -14,7 +14,7 @@ from recipe.db import mongodb
 ic.configureOutput(prefix = 'ic| -> ')
 
 logging.basicConfig(level = logging.DEBUG)
-logging.info('Start /v' + api_v + '/' + api)
+logging.info('Start /' + api)
 
 
 @asynccontextmanager
@@ -29,14 +29,14 @@ app = FastAPI(
     title = "/recipe",
     description = "API to manage recipes.",
     version = "1.0.1",
-    openapi_url = '/v' + api_v + '/' + api + '/openapi.json',
-    docs_url = '/v' + api_v + '/' + api + '/docs',
+    openapi_url = '/' + api + '/openapi.json',
+    docs_url = '/' + api + '/docs',
     redoc_url = None,
-    terms_of_service = "https://api.pebble.solutions/terms.html",
+    terms_of_service = "https://api.koden.bzh/terms.html",
     contact = {
-        "name": "Pebble",
-        "url": "https://www.pebble.solutions",
-        "email": "support@pebble.solutions",
+        "name": "Koden",
+        "url": "https://www.koden.bzh",
+        "email": "support@koden.bzh",
     },
     openapi_tags = [
         {
@@ -44,7 +44,7 @@ app = FastAPI(
             'description': "paths for users",
             "externalDocs": {
                 "description": "External docs",
-                "url": "https://www.pebble.solutions",
+                "url": "https://www.koden.bzh",
             }
         },
         {
@@ -63,7 +63,7 @@ app.add_middleware(
     allow_headers = ["*"],
 )
 
-app.include_router(recipe.router, tags = ["user"], prefix = "/v" + api_v + "/" + api)
+app.include_router(recipe.router, tags = ["user"], prefix = "/" + api)
 
 if __name__ == "__main__" and os.environ.get("ENVIRONMENT") != "PRODUCTION":
     uvicorn.run(app, host = "127.0.0.1", port = 3000)

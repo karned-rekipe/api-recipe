@@ -16,3 +16,9 @@ gcloud run deploy recipe \
 ```
 
 Cette solution est transitoire. 
+
+# En local
+```
+sudo docker build -t rekipe-api-ingredient .
+sudo docker run -d --name rekipe-api-ingredient -p 1234:8000 rekipe-api-ingredient
+```
