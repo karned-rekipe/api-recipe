@@ -5,7 +5,7 @@ api_v = '5'
 # Mongo DB config
 mongo_instance_name = 'v5'
 mongo_instance_code = 'y7gf7pr'
-mongo_database = 'recipe'
+mongo_database = 'rekipe'
 
 # responses
 responses_pattern = {
