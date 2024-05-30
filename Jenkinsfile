@@ -8,7 +8,7 @@ pipeline {
         stage('Build and Push Image') {
             when {
                 expression {
-                    return env.CHANGE_ID != null && env.GITHUB_EVENT == 'pull_request' && env.PR_ACTION == 'closed'
+                    return env.GITHUB_EVENT == 'pull_request' && env.PR_ACTION == 'closed'
                 }
             }
             steps {
