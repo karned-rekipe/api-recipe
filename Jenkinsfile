@@ -5,12 +5,7 @@ pipeline {
         DOCKER_TAG = 'latest'
     }
     stages {
-        stage('Build and Push Image') {
-            when {
-                expression {
-                    return env.PR_ACTION == 'closed'
-                }
-            }
+        stage('Build and Push Image ?') {
             steps {
                 script {
                     // Login to Docker Hub (+ tard)
