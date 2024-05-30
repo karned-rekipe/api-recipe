@@ -13,7 +13,7 @@ pipeline {
             }
             steps {
                 script {
-                    // Login to Docker Hub
+                    // Login to Docker Hub (+ tard)
                     //sh "echo '${DOCKER_PASSWORD}' | docker login -u '${DOCKER_USER}' --password-stdin"
                     // Build the Docker image
                     sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
