@@ -1,5 +1,5 @@
 # README (please)
-GO?
+
 # En local
 ```
 sudo docker build -t rekipe-api-recipe .
