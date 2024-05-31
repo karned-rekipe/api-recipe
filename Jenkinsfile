@@ -1,21 +1,30 @@
-pipeline {
+pipeline{
     agent any
-    environment {
-        DOCKER_IMAGE = 'api-recipe'
-        DOCKER_TAG = 'latest'
+    options{
+        buildDiscarder(logRotator(numToKeepStr: '5', daysToKeepStr: '5'))
+        timestamps()
     }
-    stages {
-        stage('Build and Push Image ?') {
-            steps {
-                script {
-                    // Login to Docker Hub (+ tard)
-                    //sh "echo '${DOCKER_PASSWORD}' | docker login -u '${DOCKER_USER}' --password-stdin"
-                    // Build the Docker image
-                    sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
-                    // Push the image to Docker Hub
-                    sh "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
-                }
-            }
+    environment{
+
+        registry = "<dockerhub-username>/<repo-name>"
+        registryCredential = '<dockerhub-credential-name>'
+    }
+
+    stages{
+       stage('Building image') {
+      steps{
+        script {
+          dockerImage = docker.build registry + ":$BUILD_NUMBER"
         }
+      }
+    }
+       stage('Deploy Image') {
+      steps{
+         script {
+            docker.withRegistry( '', registryCredential ) {
+            dockerImage.push()
+          }
+        }
+      }
     }
 }
