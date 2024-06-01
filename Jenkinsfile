@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'ubuntu:22.04'
-            args '-u root:root' // Run as root to install any necessary dependencies
-        }
-    }
+    agent any
     
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials-id') // Replace with your Jenkins credentials ID
@@ -12,34 +7,27 @@ pipeline {
     }
 
     stages {
-        stage('Install Dependencies') {
+        stage('Build and Test') {
+            agent {
+                docker {
+                    image 'ubuntu:22.04'
+                    args '-u root:root' // Run as root to install any necessary dependencies
+                }
+            }
             steps {
                 script {
+                    // Install dependencies
                     sh '''
                         apt-get update
                         apt-get install -y docker.io
                     '''
-                }
-            }
-        }
+                    
+                    // Checkout the source code
+                    checkout scm
 
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Build') {
-            steps {
-                script {
+                    // Build the Docker image
                     sh 'docker build -t ${DOCKERHUB_REPO}:${env.BUILD_ID} .'
-                }
-            }
-        }
 
-        stage('Test') {
-            steps {
-                script {
                     // Add your test commands here
                     sh 'echo "Running tests..."'
                 }
