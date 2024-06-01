@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Build and Test') {
             agent {
-                docker {
+                any {
                     image 'ubuntu:22.04'
                     args '-u root:root' // Run as root to install any necessary dependencies
                 }
