@@ -1,10 +1,10 @@
 pipeline {
     agent any
     
-    environment {
+    //environment {
         //DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials-id') // Replace with your Jenkins credentials ID
         //DOCKERHUB_REPO = 'your-dockerhub-repo/your-image-name'
-    }
+    //}
 
     stages {
         stage('Build and Test') {
