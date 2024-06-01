@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Test') {
             steps {
-                sh 'docker ps'
+                sh 'sudo apt-get update'
             }
         }
     }
