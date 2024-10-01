@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
 from config import API_TAG_NAME
+from models.item import Item, ItemCreate
 from services.items_service import create_item, get_items, get_item, update_item, delete_item
 
 router = APIRouter(
@@ -7,7 +8,7 @@ router = APIRouter(
 )
 
 # CREATE: Créer un nouvel item
-@router.post("/", response_model=items, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=Item, status_code=status.HTTP_201_CREATED)
 async def create_new_item(item_create: ItemCreate):
     new_item = create_item(item_create)
     return new_item
