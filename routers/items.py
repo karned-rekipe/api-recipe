@@ -8,7 +8,7 @@ router = APIRouter(
 )
 
 # CREATE: Créer un nouvel item
-@router.post("/", response_model=Item, status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_new_item(item_create: ItemCreate):
     new_item = create_item(item_create)
     return new_item
@@ -27,7 +27,7 @@ async def read_item(item_id: int):
     return item
 
 # UPDATE: Mettre à jour un item par ID
-@router.put("/{item_id}", response_model=Item, status_code=status.HTTP_204_NO_CONTENT)
+@router.put("/{item_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def update_existing_item(item_id: int, item_update: ItemCreate):
     updated_item = update_item(item_id, item_update)
     if updated_item is None:
