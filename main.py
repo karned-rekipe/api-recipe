@@ -1,5 +1,4 @@
-from fastapi import FastAPI, Path
-from starlette import status
+from fastapi import FastAPI
 from routers import items
 
 app = FastAPI()
