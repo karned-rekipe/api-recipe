@@ -1,20 +1,19 @@
-from models.item import Item, ItemCreate
+from models.item_model import Item, ItemCreate
 
-def create_item(new_item, repository) -> Item:
+def create_item(new_item, repository) -> None:
+    print(new_item)
+    print("repo service:", repository)
     repository.create_item(new_item)
-    return new_item
 
 def get_items(repository) -> list[Item]:
     return repository.list_items()
 
 def get_item(item_id: int, repository) -> Item:
-    Item = repository.get_item(item_id)
-    return Item
+    item = repository.get_item(item_id)
+    return item
 
-def update_item(item_id: int, item_update: ItemCreate, repository) -> Item:
+def update_item(item_id: int, item_update: ItemCreate, repository) -> None:
     repository.update_item(item_id, item_update)
-    return Item
 
-def delete_item(item_id: int, repository) -> bool:
+def delete_item(item_id: int, repository) -> None:
     repository.delete_item(item_id)
-    return False

@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List
-from models.item import Item, ItemCreate
+from models.item_model import Item, ItemCreate
 
 class ItemRepository(ABC):
 
