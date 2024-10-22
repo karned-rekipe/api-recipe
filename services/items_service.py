@@ -2,7 +2,6 @@ from models.item_model import Item, ItemCreate
 
 def create_item(new_item, repository) -> None:
     print(new_item)
-    print("repo service:", repository)
     repository.create_item(new_item)
 
 def get_items(repository) -> list[Item]:
