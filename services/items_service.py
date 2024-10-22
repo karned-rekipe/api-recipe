@@ -1,9 +1,8 @@
 from models.item_model import Item, ItemCreate
 
-def create_item(new_item, repository) -> None:
-    print(new_item)
-    print("repo service:", repository)
-    repository.create_item(new_item)
+def create_item(new_item, repository) -> str:
+    new_item_id = repository.create_item(new_item)
+    return new_item_id
 
 def get_items(repository) -> list[Item]:
     return repository.list_items()

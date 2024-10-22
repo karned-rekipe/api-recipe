@@ -3,6 +3,7 @@ from typing import List
 from pymongo import MongoClient
 from models.item_model import Item, ItemCreate
 from interfaces.item_interface import ItemRepository
+from uuid import uuid4
 
 class ItemRepositoryMongo(ItemRepository):
 
@@ -22,18 +23,24 @@ class ItemRepositoryMongo(ItemRepository):
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.client.close()
 
-    def create_item(self, item_create: ItemCreate):
-        self.db[self.collection].insert_one(dict(item_create))
+    #Todo
+    # gerer l'erreur si insert_one ne fonctionne pas
+    # du coup inserted_id n'existe pa
+    def create_item(self, item_create: Item) -> str:
+        item_data = item_create.model_dump()
+        item_data["_id"] = str(uuid4())
+        new_item_id = self.db[self.collection].insert_one(item_data)
+        return new_item_id.inserted_id
 
     def get_item(self, item_id: int) -> Item:
         data = self.db[self.collection].find_one({"id": item_id})
         return Item(**data) if data else None
 
-    def list_items(self) -> List[Item]:
+    def list_items(self) -> List[ItemCreate]:
         items = self.db[self.collection].find()
-        return [Item(**item) for item in items]
+        return [ItemCreate(**item) for item in items]
 
-    def update_item(self, item_id: int, item_update: ItemCreate) -> Item:
+    def update_item(self, item_id: int, item_update: Item) -> ItemCreate:
         update_data = {"$set": item_update.model_dump()}
         result = self.db[self.collection].update_one({"id": item_id}, update_data)
 
@@ -41,7 +48,7 @@ class ItemRepositoryMongo(ItemRepository):
             raise ValueError(f"Item with id {item_id} not found")
 
         updated_item = self.db[self.collection].find_one({"id": item_id})
-        return Item(**updated_item)
+        return ItemCreate(**updated_item)
 
     def delete_item(self, item_id: int) -> None:
         self.db[self.collection].delete_one({"id": item_id})

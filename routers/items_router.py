@@ -17,11 +17,12 @@ router = APIRouter(
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-async def create_new_item(item_create: ItemCreate, repo=Depends(get_repo)):
-    create_item(item_create, repo)
+async def create_new_item(item: Item, repo=Depends(get_repo)) -> dict:
+    new_item_id = create_item(item, repo)
+    print(new_item_id)
+    return {"uuid": new_item_id}
 
-
-@router.get("/", response_model=list[Item], status_code=status.HTTP_200_OK)
+@router.get("/", response_model=list[ItemCreate], status_code=status.HTTP_200_OK)
 async def read_items(repo=Depends(get_repo)):
     return get_items(repo)
 
