@@ -1,25 +1,25 @@
 from abc import ABC, abstractmethod
 from typing import List
-from models.item_model import Item, ItemCreate
+from models.item_model import Item
 
 class ItemRepository(ABC):
 
     @abstractmethod
-    def create_item(self, item_create: Item) -> ItemCreate:
+    def create_item(self, item_create: Item):
         pass
 
     @abstractmethod
-    def get_item(self, item_id: int) -> ItemCreate:
+    def get_item(self, item_id: str):
         pass
 
     @abstractmethod
-    def list_items(self) -> List[ItemCreate]:
+    def list_items(self):
         pass
 
     @abstractmethod
-    def update_item(self, item_id: int, item_update: Item) -> ItemCreate:
+    def update_item(self, item_id: str, item_update: Item):
         pass
 
     @abstractmethod
-    def delete_item(self, item_id: int) -> None:
+    def delete_item(self, item_id: str):
         pass
