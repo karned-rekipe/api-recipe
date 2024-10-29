@@ -9,6 +9,3 @@ class ItemCreate(BaseModel):
 
 class Item(ItemCreate):
     id: int
-
-    class Config:
-        orm_mode = False
