@@ -1,4 +1,3 @@
-from contextlib import contextmanager
 from fastapi import APIRouter, HTTPException, status, Depends
 from config.config import API_TAG_NAME
 from models.item_model import Item
@@ -19,7 +18,6 @@ router = APIRouter(
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_new_item(item: Item, repo=Depends(get_repo)) -> dict:
     new_item_id = create_item(item, repo)
-    print(new_item_id)
     return {"uuid": new_item_id}
 
 @router.get("/", status_code=status.HTTP_200_OK)
