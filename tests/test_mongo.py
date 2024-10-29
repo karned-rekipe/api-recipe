@@ -1,6 +1,6 @@
 from unittest import TestCase
 from pymongo import MongoClient
-from models.item_model import ItemCreate
+from models.item_model import Item
 from repositories.item_repository import ItemRepositoryMongo
 
 class TestMongoDB(TestCase):
@@ -15,7 +15,7 @@ class TestMongoDB(TestCase):
             repo.db[self.mongo_collection_name].delete_many({})
 
     def test_populate_mongodb(self):
-        item_create = ItemCreate(name="Test Item", description="A simple test item", price=10.99, quantity=5)
+        item_create = Item(name="Test Item", description="A simple test item", price=10.99, quantity=5)
 
         with self.repository as repo:
             repo.create_item(item_create)
