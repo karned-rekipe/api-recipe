@@ -1,8 +1,12 @@
 from typing import List
 
 from pymongo import MongoClient
-from models.item_model import Item, ItemCreate
+from models.item_model import Item
 from interfaces.item_interface import ItemRepository
+from uuid import uuid4
+
+from schema.item_schema import individual_serial, list_serial
+
 
 class ItemRepositoryMongo(ItemRepository):
 
@@ -22,26 +26,29 @@ class ItemRepositoryMongo(ItemRepository):
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.client.close()
 
-    def create_item(self, item_create: ItemCreate):
-        self.db[self.collection].insert_one(dict(item_create))
+    #Todo
+    # gerer l'erreur si insert_one ne fonctionne pas
+    # du coup inserted_id n'existe pa
+    def create_item(self, item_create: Item) -> str:
+        item_data = item_create.model_dump()
+        item_data["_id"] = str(uuid4())
+        new_item_id = self.db[self.collection].insert_one(item_data)
+        return new_item_id.inserted_id
 
-    def get_item(self, item_id: int) -> Item:
-        data = self.db[self.collection].find_one({"id": item_id})
-        return Item(**data) if data else None
+    def get_item(self, item_id: int) -> dict:
+        result = self.db[self.collection].find_one({"_id": item_id})
+        item = individual_serial(result)
+        return item
 
-    def list_items(self) -> List[Item]:
-        items = self.db[self.collection].find()
-        return [Item(**item) for item in items]
+    def list_items(self) -> List[dict]:
+        result = self.db[self.collection].find()
+        items = list_serial(result)
+        return items
 
-    def update_item(self, item_id: int, item_update: ItemCreate) -> Item:
+    def update_item(self, item_id: str, item_update: Item) -> None:
         update_data = {"$set": item_update.model_dump()}
-        result = self.db[self.collection].update_one({"id": item_id}, update_data)
+        self.db[self.collection].find_one_and_update({"_id": item_id}, update_data)
 
-        if result.matched_count == 0:
-            raise ValueError(f"Item with id {item_id} not found")
 
-        updated_item = self.db[self.collection].find_one({"id": item_id})
-        return Item(**updated_item)
-
-    def delete_item(self, item_id: int) -> None:
+    def delete_item(self, item_id: str) -> None:
         self.db[self.collection].delete_one({"id": item_id})

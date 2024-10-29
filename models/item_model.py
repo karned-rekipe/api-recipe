@@ -1,11 +1,8 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 
-class ItemCreate(BaseModel):
+class Item(BaseModel):
     name: str
     description: Optional[str] = None
     price: float
     quantity: int
-
-class Item(ItemCreate):
-    id: int
