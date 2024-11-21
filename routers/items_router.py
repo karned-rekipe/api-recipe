@@ -1,8 +1,10 @@
 from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi.security import HTTPBearer
 from config.config import API_TAG_NAME
 from models.item_model import Item
 from services.items_service import create_item, get_items, get_item, update_item, delete_item
 from config.config import ITEM_REPO
+from services.auth_service import verify_token
 
 
 def get_repo():
@@ -10,8 +12,9 @@ def get_repo():
         yield repo
 
 
+
 router = APIRouter(
-    tags=[API_TAG_NAME]
+    tags=[API_TAG_NAME],
 )
 
 
@@ -20,7 +23,7 @@ async def create_new_item(item: Item, repo=Depends(get_repo)) -> dict:
     new_item_id = create_item(item, repo)
     return {"uuid": new_item_id}
 
-@router.get("/", status_code=status.HTTP_200_OK)
+@router.get("/", status_code=status.HTTP_200_OK, dependencies=[Depends(verify_token)])
 async def read_items(repo=Depends(get_repo)):
     return get_items(repo)
 
