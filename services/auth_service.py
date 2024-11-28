@@ -3,7 +3,7 @@ from typing import Annotated
 import requests
 import logging
 
-from fastapi import HTTPException, Depends
+from fastapi import HTTPException, Depends, Request
 from fastapi.security import HTTPBearer
 from jose import jwt, JWTError, jwk
 from config.config import CLIENT_ID
@@ -12,7 +12,7 @@ from config.config import CLIENT_ID
 http_bearer = HTTPBearer()
 
 # token: str = Depends(http_bearer)
-def verify_token(token: Annotated[str, Depends(http_bearer)]):
+def verify_token(request: Request, token: Annotated[str, Depends(http_bearer)]):
     """Vérifier et décoder le token JWT"""
     try:
         # Récupérer la configuration OpenID de Keycloak
@@ -41,7 +41,8 @@ def verify_token(token: Annotated[str, Depends(http_bearer)]):
         logging.debug(f"Token décodé : {decoded_token}")
         logging.debug(f"Audience du token : {decoded_token.get('aud')}")
 
-        return decoded_token
+        #TODO: que ce passe still sur decode_token est vide
+        request.state.token_info = decoded_token
     except JWTError as e:
         logging.error(f"Erreur de décodage du token JWT : {str(e)}")
         raise HTTPException(status_code = 401, detail = "Invalid token")

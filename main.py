@@ -3,7 +3,7 @@ from routers import items_router
 import logging
 
 # Configurez le logger pour afficher les informations dans la console
-logging.basicConfig(level = logging.DEBUG)
+# logging.basicConfig(level = logging.DEBUG)
 
 app = FastAPI()
 
