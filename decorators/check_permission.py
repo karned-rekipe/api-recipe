@@ -19,7 +19,7 @@ def check_ressource(list_aud: dict) -> None:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Insufficient permissions ! "
-                   "Need : api-recipe / Got : " + ", ".join(list_aud)
+                   f"Need : {API_NAME} / Got : " + ", ".join(list_aud)
         )
 
 def check_roles(list_roles: list, permissions: List[str]) -> None:
