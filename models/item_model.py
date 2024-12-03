@@ -1,15 +1,7 @@
 from pydantic import BaseModel, Field, HttpUrl
 from typing import Optional, List
-
-class Ingredient(BaseModel):
-    name: str
-    quantity: Optional[float] = Field(None, description="Quantity of the ingredient")
-    unit: Optional[str] = Field(None, description="Unit of measurement (e.g., g, pcs)")
-
-class Step(BaseModel):
-    step_number: int
-    description: str
-    duration: Optional[str] = Field(None, description="Optional duration for this step (e.g., 10 min)")
+from models.ingredient_model import Ingredient
+from models.step_model import Step
 
 class Item(BaseModel):
     name: str
