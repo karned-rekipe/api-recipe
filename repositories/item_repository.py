@@ -1,11 +1,11 @@
 from typing import List
-
-from pymongo import MongoClient
-from models.item_model import Item
-from interfaces.item_interface import ItemRepository
 from uuid import uuid4
 
-from schema.item_schema import individual_serial, list_serial
+from pymongo import MongoClient
+
+from interfaces.item_interface import ItemRepository
+from models.item_model import Item
+from schema.item_schema import list_item_serial, item_serial
 
 
 class ItemRepositoryMongo(ItemRepository):
@@ -37,12 +37,12 @@ class ItemRepositoryMongo(ItemRepository):
 
     def get_item(self, item_id: int) -> dict:
         result = self.db[self.collection].find_one({"_id": item_id})
-        item = individual_serial(result)
+        item = item_serial(result)
         return item
 
     def list_items(self) -> List[dict]:
         result = self.db[self.collection].find()
-        items = list_serial(result)
+        items = list_item_serial(result)
         return items
 
     def update_item(self, item_id: str, item_update: Item) -> None:
