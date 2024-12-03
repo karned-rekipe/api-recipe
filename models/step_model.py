@@ -1,5 +1,7 @@
-from pydantic import BaseModel, Field, HttpUrl
-from typing import Optional, List
+from typing import Optional
+
+from pydantic import BaseModel, Field
+
 
 class Step(BaseModel):
     step_number: int
