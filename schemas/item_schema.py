@@ -1,5 +1,5 @@
-from schema.ingredient_schema import list_ingredient_serial
-from schema.step_schema import list_step_serial
+from schemas.ingredient_schema import list_ingredient_serial
+from schemas.step_schema import list_step_serial
 
 
 def item_serial(item) -> dict:
