@@ -1,10 +1,11 @@
-from fastapi import APIRouter, HTTPException, status, Depends, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, status
+
 from config.config import API_TAG_NAME
+from config.config import ITEM_REPO
 from decorators.check_permission import check_permissions
 from models.item_model import Item
-from services.items_service import create_item, get_items, get_item, update_item, delete_item
-from config.config import ITEM_REPO
 from services.auth_service import verify_token
+from services.items_service import create_item, delete_item, get_item, get_items, update_item
 
 
 def get_repo():
@@ -24,13 +25,14 @@ async def create_new_item(item: Item, repo=Depends(get_repo)) -> dict:
     new_item_id = create_item(item, repo)
     return {"uuid": new_item_id}
 
-@router.get("/", status_code=status.HTTP_200_OK, dependencies=[Depends(verify_token)])
+
+@router.get("/", status_code = status.HTTP_200_OK, dependencies = [Depends(verify_token)], response_model = list[Item])
 @check_permissions(['read', 'read_own'])
 async def read_items(request: Request, repo=Depends(get_repo)):
     return get_items(repo)
 
 
-@router.get("/{item_id}", status_code=status.HTTP_200_OK)
+@router.get("/{item_id}", status_code = status.HTTP_200_OK, response_model = Item)
 @check_permissions(['list', 'list_own'])
 async def read_item(item_id: str, repo=Depends(get_repo)):
     item = get_item(item_id, repo)
