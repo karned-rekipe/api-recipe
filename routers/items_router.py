@@ -21,7 +21,7 @@ router = APIRouter(
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 @check_permissions(['create'])
-async def create_new_item(item: Item, repo=Depends(get_repo)) -> dict:
+async def create_new_item(request: Request, item: Item, repo=Depends(get_repo)) -> dict:
     new_item_id = create_item(item, repo)
     return {"uuid": new_item_id}
 
@@ -34,7 +34,7 @@ async def read_items(request: Request, repo=Depends(get_repo)):
 
 @router.get("/{item_id}", status_code = status.HTTP_200_OK, response_model = Item)
 @check_permissions(['list', 'list_own'])
-async def read_item(item_id: str, repo=Depends(get_repo)):
+async def read_item(request: Request, item_id: str, repo=Depends(get_repo)):
     item = get_item(item_id, repo)
     if item is None:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -43,12 +43,12 @@ async def read_item(item_id: str, repo=Depends(get_repo)):
 
 @router.put("/{item_id}", status_code=status.HTTP_204_NO_CONTENT)
 @check_permissions(['update', 'update_own'])
-async def update_existing_item(item_id: str, item_update: Item, repo=Depends(get_repo)):
+async def update_existing_item(request: Request, item_id: str, item_update: Item, repo=Depends(get_repo)):
     update_item(item_id, item_update, repo)
 
 
 @router.delete("/{item_id}", status_code=status.HTTP_204_NO_CONTENT)
 @check_permissions(['delete', 'delete_own'])
-async def delete_existing_item(item_id: str, repo=Depends(get_repo)):
+async def delete_existing_item(request: Request, item_id: str, repo=Depends(get_repo)):
     delete_item(item_id, repo)
 
