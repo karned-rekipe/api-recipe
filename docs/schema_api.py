@@ -15,12 +15,11 @@ from diagrams.saas.identity import Auth0
 
 graph_attr = {
     "layout": "dot",
-    "rankdir": "LR",
+    "rankdir": "TB",
     "nodesep": "1",
     "ranksep": "1",
     "splines": "true",
-    "size": "20",
-    "ratio": "0.75",
+    "ratio": "auto",
 }
 
 node_attr = {
@@ -38,23 +37,26 @@ edge_attr = {
 }
 
 with (Diagram("RECIPE", show = False, graph_attr = graph_attr, node_attr = node_attr, edge_attr = edge_attr)) as diag:
-    with Cluster("VCS"):
-        vcs = Github("karned-rekipe/api-recipe")
+    with Cluster("API services", direction = "TB"):
+        with Cluster("VCS"):
+            vcs = Github("karned-rekipe/api-recipe")
 
-        with Cluster("CD"):
-            cd = Argocd("ArgoCD")
+            with Cluster("CD"):
+                cd = Argocd("ArgoCD")
 
-            with Cluster("Kubernetes"):
-                docker_api = Docker("API recipe")
-                docker_db = Docker("DB recipe")
+                with Cluster("Kubernetes"):
+                    docker_api = Docker("API recipe")
+                    docker_db = Docker("DB recipe")
 
-        with Cluster("CI"):
-            ci = Jenkins("Jenkins")
-            hub = Storage("Docker Hub")
+            with Cluster("CI"):
+                ci = Jenkins("Jenkins")
+                hub = Storage("Docker Hub")
 
-    with Cluster("API services"):
-        api = Fastapi("FastAPI")
-        db = Mongodb("MongoDB")
+        with Cluster("API"):
+            api = Fastapi("FastAPI")
+            db = Mongodb("MongoDB")
+
+
 
     with Cluster("Services"):
         with Cluster("API gateway"):
@@ -94,4 +96,3 @@ with (Diagram("RECIPE", show = False, graph_attr = graph_attr, node_attr = node_
     api >> metrics
     db >> metrics
 
-    metrics >> dashboard
