@@ -52,6 +52,13 @@ def check_permissions(permissions: List[str]):
             logging.info(f"Checking permissions {permissions}")
             logging.info(f"User: {request}")
 
+            if not hasattr(request.state, "token_info"):
+                logging.error("token_info n'est pas défini dans request.state")
+                raise HTTPException(
+                    status_code=403,
+                    detail="Invalid token or token_info not defined"
+                )
+
             check_ressource(request.state.token_info.get('resource_access'))
             check_roles(request.state.token_info.get('resource_access').get(API_NAME).get('roles'), permissions)
 
