@@ -1,7 +1,7 @@
 import os
 from repositories.item_repository import ItemRepositoryMongo
 
-API_NAME = "api-recipe"
+API_NAME = os.environ["API_NAME"]
 API_TAG_NAME =  "Recipes"
 
 ITEM_REPOSITORY = 'mongodb://localhost:27017'
