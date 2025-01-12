@@ -77,3 +77,117 @@ def test_item_missing_fields():
     }
     with pytest.raises(ValidationError):
         Item(**incomplete_item_data)
+
+def test_item_invalid_description_type():
+    invalid_item_data = {
+        "name": "Invalid Recipe",
+        "description": 123
+    }
+    with pytest.raises(ValidationError):
+        Item(**invalid_item_data)
+
+def test_item_invalid_price_type():
+    invalid_item_data = {
+        "name": "Invalid Recipe",
+        "price": "ten"
+    }
+    with pytest.raises(ValidationError):
+        Item(**invalid_item_data)
+
+def test_item_invalid_quantity_type():
+    invalid_item_data = {
+        "name": "Invalid Recipe",
+        "quantity": "two"
+    }
+    with pytest.raises(ValidationError):
+        Item(**invalid_item_data)
+
+def test_item_invalid_number_of_persons_type():
+    invalid_item_data = {
+        "name": "Invalid Recipe",
+        "number_of_persons": "four"
+    }
+    with pytest.raises(ValidationError):
+        Item(**invalid_item_data)
+
+def test_item_invalid_origin_country_type():
+    invalid_item_data = {
+        "name": "Invalid Recipe",
+        "origin_country": 42
+    }
+    with pytest.raises(ValidationError):
+        Item(**invalid_item_data)
+
+def test_item_invalid_attributes_type():
+    invalid_item_data = {
+        "name": "Invalid Recipe",
+        "attributes": "vegan"
+    }
+    with pytest.raises(ValidationError):
+        Item(**invalid_item_data)
+
+def test_item_invalid_utensils_type():
+    invalid_item_data = {
+        "name": "Invalid Recipe",
+        "utensils": "pan"
+    }
+    with pytest.raises(ValidationError):
+        Item(**invalid_item_data)
+
+def test_item_invalid_ingredients_type():
+    invalid_item_data = {
+        "name": "Invalid Recipe",
+        "ingredients": "Sugar"
+    }
+    with pytest.raises(ValidationError):
+        Item(**invalid_item_data)
+
+def test_item_invalid_steps_type():
+    invalid_item_data = {
+        "name": "Invalid Recipe",
+        "steps": "First step"
+    }
+    with pytest.raises(ValidationError):
+        Item(**invalid_item_data)
+
+def test_item_invalid_thumbnail_url_type():
+    invalid_item_data = {
+        "name": "Invalid Recipe",
+        "thumbnail_url": 123
+    }
+    with pytest.raises(ValidationError):
+        Item(**invalid_item_data)
+
+def test_item_invalid_large_image_url_type():
+    invalid_item_data = {
+        "name": "Invalid Recipe",
+        "large_image_url": 123
+    }
+    with pytest.raises(ValidationError):
+        Item(**invalid_item_data)
+
+def test_item_invalid_source_reference_type():
+    invalid_item_data = {
+        "name": "Invalid Recipe",
+        "source_reference": 123
+    }
+    with pytest.raises(ValidationError):
+        Item(**invalid_item_data)
+
+def test_item_invalid_url():
+    invalid_item_data = {
+        "name": "Invalid Recipe",
+        "thumbnail_url": "invalid_url",
+        "large_image_url": "invalid_url"
+    }
+    with pytest.raises(ValidationError):
+        Item(**invalid_item_data)
+
+def test_item_invalid_list_types():
+    invalid_item_data = {
+        "name": "Invalid Recipe",
+        "attributes": ["vegan", 123],
+        "utensils": ["pan", 42]
+    }
+    with pytest.raises(ValidationError):
+        Item(**invalid_item_data)
