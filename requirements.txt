@@ -1,6 +1,6 @@
 fastapi~=0.104.1
 pydantic~=2.10.3
-pymongo~=4.10.1
+pymongo~=4.9
 requests~=2.31.0
 python-jose~=3.3.0
 verif_token~=0.2.2
