@@ -5,7 +5,7 @@ from pymongo import MongoClient
 
 from interfaces.item_interface import ItemRepository
 from models.item_model import Item
-from schema.item_schema import list_item_serial, item_serial
+from schemas.item_schema import list_item_serial, item_serial
 
 
 class ItemRepositoryMongo(ItemRepository):
