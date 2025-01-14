@@ -5,7 +5,8 @@ from config.config import ITEM_REPO
 from decorators.check_permission import check_permissions
 from models.item_model import Item
 from services.auth_service import verify_token
-from services.items_service import create_item, delete_item, get_item, get_items, update_item
+from services.items_service import create_item, delete_item, get_item, get_items, update_ite
+from verif_token import verify_token
 
 
 def get_repo():
@@ -15,6 +16,7 @@ def get_repo():
 
 router = APIRouter(
     tags=[API_TAG_NAME],
+    dependencies=[Depends(verify_token)]
 )
 
 
