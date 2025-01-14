@@ -25,7 +25,7 @@ def introspect_token(token: str) -> dict:
     return response.json()
 
 def write_cache_token(token: str, token_info: dict):
-    ttl = token_info.get("exp", int(time.time()) + 300) - int(time.time())
+    ttl = token_info.get("exp") - int(time.time())
     r.set(token, str(token_info), ex=ttl)
 
 def read_cache_token(token: str) -> dict:
@@ -37,7 +37,7 @@ def get_token_info(token: str) -> dict:
     response = read_cache_token(token)
     if not response:
         response = introspect_token(token)
-    write_cache_token(token, response)
+        write_cache_token(token, response)
     return response
 
 
@@ -47,8 +47,6 @@ def is_token_active(token_info: dict) -> bool:
     exp = token_info.get("exp")
 
     if iat is not None and exp is not None:
-        expire_in = exp - now
-        print(f"Token will expire in {expire_in} seconds")
         return iat < now < exp
 
     return False
