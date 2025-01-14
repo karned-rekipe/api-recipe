@@ -1,11 +1,12 @@
 import os
+import time
 from typing import Annotated
 
 import httpx
 
 from fastapi import HTTPException, Depends
 from fastapi.security import HTTPBearer
-from config.config import KEYCLOAK_URL
+from config.config import API_NAME, KEYCLOAK_URL
 
 http_bearer = HTTPBearer()
 
@@ -21,18 +22,36 @@ def introspect_token(token: str):
     if response.status_code != 200:
         raise HTTPException(status_code=500, detail="Keycloak introspection failed")
 
-    token_info = response.json()
-    if not token_info.get("active"):
-        raise HTTPException(status_code=401, detail="Invalid token")
+    return response.json()
 
-    return token_info
+def is_token_active(token_info: dict):
+    result = False
+    iat = token_info.get("iat")
+    exp = token_info.get("exp")
+    now = int(time.time())
+    print(f"iat: {iat}", f"exp: {exp}", f"now: {now}")
+    if iat < now < exp:
+        result = True
+
+    return result
+
+def is_token_valid_audience(token_info: dict):
+    result = False
+    aud = token_info.get("aud")
+    print(f"aud: {aud}", f"API_NAME: {API_NAME}")
+    if API_NAME in aud:
+        result = True
+
+    return result
+
 
 def verif_token(token: Annotated[str, Depends(http_bearer)]):
-    """
-    Vérifie le token, d'abord via le cache JSON, sinon via Keycloak.
-    """
     token = token.credentials
 
     token_info = introspect_token(token)
 
-    return token_info
+    if not is_token_active(token_info):
+        raise HTTPException(status_code=401, detail="Token is not active")
+
+    if not is_token_valid_audience(token_info):
+        raise HTTPException(status_code=401, detail="Token is not valid for this audience")
