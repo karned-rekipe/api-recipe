@@ -4,7 +4,7 @@ from decorators.check_permission import check_permissions
 from models.item_model import Item
 from services.items_service import create_item, get_items, get_item, update_item, delete_item
 from config.config import ITEM_REPO
-from services.auth_service import verify_token
+from services.auth_service import  verif_token
 
 
 def get_repo():
@@ -24,8 +24,8 @@ async def create_new_item(item: Item, repo=Depends(get_repo)) -> dict:
     new_item_id = create_item(item, repo)
     return {"uuid": new_item_id}
 
-@router.get("/", status_code=status.HTTP_200_OK, dependencies=[Depends(verify_token)])
-@check_permissions(['read', 'read_own'])
+@router.get("/", status_code=status.HTTP_200_OK, dependencies=[Depends(verif_token)])
+#@check_permissions(['read', 'read_own'])
 async def read_items(request: Request, repo=Depends(get_repo)):
     return get_items(repo)
 
