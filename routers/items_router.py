@@ -15,14 +15,15 @@ def get_repo():
 
 router = APIRouter(
     tags=[API_TAG_NAME],
-    dependencies=[Depends(verif_token), Depends(get_redis_api_db)],
+    dependencies=[Depends(verif_token)],
 
 )
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 @check_permissions(['create'])
-async def create_new_item(item: Item, repo=Depends(get_repo)) -> dict:
+async def create_new_item(request: Request, item: Item, repo=Depends(get_repo)) -> dict:
+    item.created_by = request.state.token_info.get('user_id')
     new_item_id = create_item(item, repo)
     return {"uuid": new_item_id}
 

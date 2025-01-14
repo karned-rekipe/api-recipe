@@ -60,11 +60,21 @@ def is_token_valid_audience(token_info: dict) -> bool:
     return False
 
 
+def generate_state_info(token_info: dict) -> dict:
+    return {
+        "user_id": token_info.get("sub"),
+        "user_display_name": token_info.get("preferred_username"),
+        "user_email": token_info.get("email"),
+        "user_audiences": token_info.get("aud"),
+        "user_roles": token_info.get("resource_access").get(API_NAME).get("roles")
+    }
+
+
 def verif_token(request: Request, token: Annotated[str, Depends(http_bearer)]):
     token = token.credentials
 
     token_info = get_token_info(token)
-    request.state.token_info = token_info
+    request.state.token_info = generate_state_info(token_info)
 
     if not is_token_active(token_info):
         raise HTTPException(status_code=401, detail="Token is not active")

@@ -17,7 +17,8 @@ def item_serial(item) -> dict:
         "steps": list_step_serial(item.get("steps", [])),
         "thumbnail_url": item.get("thumbnail_url"),
         "large_image_url": item.get("large_image_url"),
-        "source_reference": item.get("source_reference")
+        "source_reference": item.get("source_reference"),
+        "created_by": item.get("created_by"),
     }
 
 

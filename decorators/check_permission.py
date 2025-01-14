@@ -7,21 +7,6 @@ from typing import List
 from config.config import API_NAME
 
 
-def check_ressource(list_aud: dict) -> None:
-    """
-    Args:
-        list_aud: A dictionary representing the audience claims from a token. This dictionary is checked to ensure it includes the required API name.
-
-    Raises:
-        HTTPException: If the required API name is not found in the credentials provided, an HTTP 403 Forbidden error is raised, indicating insufficient permissions.
-    """
-    if not API_NAME in list_aud:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Insufficient permissions ! "
-                   f"Need : {API_NAME} / Got : " + ", ".join(list_aud)
-        )
-
 def check_roles(list_roles: list, permissions: List[str]) -> None:
     """
     Args:
@@ -52,8 +37,7 @@ def check_permissions(permissions: List[str]):
             logging.info(f"Checking permissions {permissions}")
             logging.info(f"User: {request}")
 
-            check_ressource(request.state.token_info.get('resource_access'))
-            check_roles(request.state.token_info.get('resource_access').get(API_NAME).get('roles'), permissions)
+            check_roles(request.state.token_info.get('user_roles'), permissions)
 
             return await func(request, *args, **kwargs)
 

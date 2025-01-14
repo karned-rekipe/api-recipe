@@ -15,5 +15,14 @@ GET http://127.0.0.1:8010/
 accept: application/json
 Authorization: Bearer {{auth_token}}
 
+### Crée un item
+POST http://127.0.0.1:8010/
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "name": "item1"
+}
+
 ###
 
