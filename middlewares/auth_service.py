@@ -8,6 +8,7 @@ from starlette.requests import Request
 from starlette.responses import Response
 
 from config.config import API_NAME, KEYCLOAK_HOST, KEYCLOAK_REALM, get_redis_api_db
+from decorators.log_time import log_time_async
 
 # Initialisation de Redis
 r = get_redis_api_db()
@@ -17,9 +18,10 @@ class TokenVerificationMiddleware(BaseHTTPMiddleware):
     def __init__( self, app ):
         super().__init__(app)
 
+    @log_time_async
     async def dispatch( self, request: Request, call_next ) -> Response:
-        start = time.time()
-        logging.info("TokenVerificationMiddleware: Start")
+        logging.info("TokenVerificationMiddleware")
+
         auth_header = request.headers.get("Authorization")
         if not auth_header or not auth_header.startswith("Bearer "):
             raise HTTPException(status_code=401, detail="Token manquant ou invalide")
@@ -41,9 +43,6 @@ class TokenVerificationMiddleware(BaseHTTPMiddleware):
         logging.info(f"TokenVerificationMiddleware: State token info: {state_token_info}")
 
         response = await call_next(request)
-        end = time.time()
-        logging.info(f"TokenVerificationMiddleware: Time elapsed: {end - start}")
-        logging.info("TokenVerificationMiddleware: End")
         return response
 
     def introspect_token( self, token: str ) -> dict:
@@ -60,8 +59,9 @@ class TokenVerificationMiddleware(BaseHTTPMiddleware):
         return response.json()
 
     def write_cache_token( self, token: str, token_info: dict ):
-        ttl = token_info.get("exp") - int(time.time())
-        r.set(token, str(token_info), ex=ttl)
+        if token_info.get("exp") is not None:
+            ttl = token_info.get("exp") - int(time.time())
+            r.set(token, str(token_info), ex=ttl)
 
     def read_cache_token( self, token: str ) -> dict:
         cached_result = r.get(token)
