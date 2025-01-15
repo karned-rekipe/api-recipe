@@ -21,7 +21,7 @@ Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
 {
-  "name": "item1"
+  "name": "ragout de lapin au poivre"
 }
 
 ###

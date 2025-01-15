@@ -23,3 +23,7 @@ class ItemRepository(ABC):
     @abstractmethod
     def delete_item(self, item_id: str):
         pass
+
+    @abstractmethod
+    def close(self):
+        pass
