@@ -6,10 +6,11 @@ from fastapi import HTTPException, Depends
 from fastapi.security import HTTPBearer
 from starlette.requests import Request
 
-from config.config import API_NAME, KEYCLOAK_HOST, KEYCLOAK_REALM, get_redis_api_db
+from config.config import API_NAME, KEYCLOAK_HOST, KEYCLOAK_REALM
+from services.inmemory_service import r
 
-r = get_redis_api_db()
 http_bearer = HTTPBearer()
+
 
 def introspect_token(token: str) -> dict:
     url = f"{KEYCLOAK_HOST}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token/introspect"

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Request
-from config.config import API_TAG_NAME, get_redis_api_db
+from config.config import API_TAG_NAME
 from decorators.check_permission import check_permissions
 from models.item_model import Item
 from services.items_service import create_item, get_items, get_item, update_item, delete_item
@@ -16,7 +16,6 @@ def get_repo():
 router = APIRouter(
     tags=[API_TAG_NAME],
     dependencies=[Depends(verif_token)],
-
 )
 
 
