@@ -7,3 +7,4 @@ __pycache__/
 share.py
 token_sample.py
 _mongo_data
+_cache

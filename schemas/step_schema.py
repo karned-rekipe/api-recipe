@@ -2,7 +2,8 @@ def step_serial(item) -> dict:
     return {
         "step_number": item["step_number"],
         "description": item["description"],
-        "duration": item.get("duration")
+        "duration": item.get("duration"),
+        "created_by": item.get("created_by")
     }
 
 

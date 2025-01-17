@@ -1,73 +1,85 @@
+import os
+import time
 from typing import Annotated
-
-import requests
-import logging
-
-from fastapi import HTTPException, Depends, Request
+import httpx
+from fastapi import HTTPException, Depends
 from fastapi.security import HTTPBearer
-from jose import jwt, JWTError, jwk
-from config.config import API_NAME, KEYCLOAK_URL
+from starlette.requests import Request
+
+from config.config import API_NAME, KEYCLOAK_HOST, KEYCLOAK_REALM
+from services.inmemory_service import r
 
 http_bearer = HTTPBearer()
 
-def get_config_openid():
-    openid_config = requests.get(f"{KEYCLOAK_URL}/.well-known/openid-configuration").json()
-    jwks_uri = openid_config["jwks_uri"]
 
-    return jwks_uri
+def introspect_token(token: str) -> dict:
+    url = f"{KEYCLOAK_HOST}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token/introspect"
+    data = {
+        "token": token,
+        "client_id": os.environ.get("KEYCLOAK_CLIENT_ID"),
+        "client_secret": os.environ.get("KEYCLOAK_CLIENT_SECRET")
+    }
 
+    response = httpx.post(url, data=data)
+    if response.status_code != 200:
+        raise HTTPException(status_code=500, detail="Keycloak introspection failed")
+    return response.json()
 
-def get_jwks(jwks_uri):
-    jwks = requests.get(jwks_uri).json()
+def write_cache_token(token: str, token_info: dict):
+    ttl = token_info.get("exp") - int(time.time())
+    r.set(token, str(token_info), ex=ttl)
 
-    return jwks
+def read_cache_token(token: str) -> dict:
+    cached_result = r.get(token)
+    if cached_result is not None:
+        return eval(cached_result)
 
-
-def get_public_key(jwks):
-    public_key = next((key for key in jwks["keys"] if key["alg"] == "RS256"), None)
-    if not public_key:
-        raise HTTPException(status_code=401, detail="Invalid token signing key")
-
-    return public_key
-
-
-def create_rsa_key(public_key):
-    rsa_key = jwk.construct(public_key)
-
-    return rsa_key
-
-
-def decode_token(token, rsa_key):
-    decoded_token = jwt.decode(token.credentials, rsa_key, algorithms=["RS256"], audience=API_NAME)
-    logging.debug(f"Token décodé : {decoded_token}")
-
-    return decoded_token
+def get_token_info(token: str) -> dict:
+    response = read_cache_token(token)
+    if not response:
+        response = introspect_token(token)
+        write_cache_token(token, response)
+    return response
 
 
-def verify_token(request: Request, token: Annotated[str, Depends(http_bearer)]):
-    """Vérifier et décoder le token JWT"""
-    try:
-        jwks_uri = get_config_openid()
-        logging.debug(f"Récupération des clés publiques depuis {jwks_uri}")
+def is_token_active(token_info: dict) -> bool:
+    now = int(time.time())
+    iat = token_info.get("iat")
+    exp = token_info.get("exp")
 
-        jwks = get_jwks(jwks_uri)
-        logging.debug(f"Clés JWKS récupérées : {jwks}")
+    if iat is not None and exp is not None:
+        return iat < now < exp
 
-        public_key = get_public_key(jwks)
-        logging.debug(f"Clé publique trouvée : {public_key}")
+    return False
 
-        rsa_key = create_rsa_key(public_key)
-        logging.debug(f"Clé publique construite : {rsa_key}")
+def is_token_valid_audience(token_info: dict) -> bool:
+    aud = token_info.get("aud")
+
+    if API_NAME in aud:
+        return True
+
+    return False
 
 
-        logging.debug(f"Token : {token}")
-        logging.debug(f"Credentials : {token.credentials}")
+def generate_state_info(token_info: dict) -> dict:
+    return {
+        "user_id": token_info.get("sub"),
+        "user_display_name": token_info.get("preferred_username"),
+        "user_email": token_info.get("email"),
+        "user_audiences": token_info.get("aud"),
+        "user_roles": token_info.get("resource_access").get(API_NAME).get("roles")
+    }
 
-        request.state.token_info = decode_token(token, rsa_key)
-        return request.state.token_info
-    except JWTError as e:
-        logging.error(f"Erreur de décodage du token JWT : {str(e)}")
-        raise HTTPException(status_code = 401, detail = "Invalid token")
-    except Exception as e:
-        logging.error(f"Erreur lors de la vérification du token : {str(e)}")
-        raise HTTPException(status_code = 500, detail = "Internal server error")
+
+def verif_token(request: Request, token: Annotated[str, Depends(http_bearer)]):
+    token = token.credentials
+
+    token_info = get_token_info(token)
+    request.state.token_info = generate_state_info(token_info)
+
+    if not is_token_active(token_info):
+        raise HTTPException(status_code=401, detail="Token is not active")
+
+    if not is_token_valid_audience(token_info):
+        raise HTTPException(status_code=401, detail="Token is not valid for this audience")
+

@@ -17,4 +17,4 @@ class Item(BaseModel):
     thumbnail_url: Optional[HttpUrl] = Field(None, description="URL for the recipe thumbnail image")
     large_image_url: Optional[HttpUrl] = Field(None, description="URL for a larger image of the recipe")
     source_reference: Optional[str] = Field(None, description="Reference for the source of the recipe (e.g., book, website)")
-
+    created_by: Optional[str] = Field(None, description="User who created the recipe")

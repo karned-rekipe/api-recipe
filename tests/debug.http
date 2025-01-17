@@ -1,0 +1,28 @@
+### Récupère un token
+POST http://localhost:8009/token
+accept: application/json
+Content-Type: application/json
+
+{
+  "username": "killian",
+  "password": "kikielkiwi"
+}
+
+> {% client.global.set("auth_token", response.body.access_token) %}
+
+### Utilise la route / protégée
+GET http://127.0.0.1:8010/
+accept: application/json
+Authorization: Bearer {{auth_token}}
+
+### Crée un item
+POST http://127.0.0.1:8010/
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "name": "item1"
+}
+
+###
+

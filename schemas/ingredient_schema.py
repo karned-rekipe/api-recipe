@@ -2,7 +2,8 @@ def ingredient_serial(item) -> dict:
     return {
         "name": item["name"],
         "quantity": item.get("quantity"),
-        "unit": item.get("unit")
+        "unit": item.get("unit"),
+        "created_by": item.get("created_by")
     }
 
 
