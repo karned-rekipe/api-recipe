@@ -7,10 +7,10 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import Response
 
-from config.config import API_NAME, KEYCLOAK_HOST, KEYCLOAK_REALM, get_redis_api_db
+from config.config import API_NAME, KEYCLOAK_HOST, KEYCLOAK_REALM
 from decorators.log_time import log_time_async
+from services.inmemory_service import get_redis_api_db
 
-# Initialisation de Redis
 r = get_redis_api_db()
 
 
