@@ -1,5 +1,5 @@
 import os
-import redis
+import logging
 from repositories.item_repository import ItemRepositoryMongo
 
 API_NAME = os.environ['API_NAME']
@@ -17,3 +17,13 @@ REDIS_HOST = os.environ['REDIS_HOST']
 REDIS_PORT = int(os.environ['REDIS_PORT'])
 REDIS_DB = int(os.environ['REDIS_DB'])
 REDIS_PASSWORD = os.environ['REDIS_PASSWORD']
+
+def get_db(uuid) -> ItemRepositoryMongo:
+    logging.info(f"Config : get_db: {uuid}")
+    if uuid == "d3f48a42-0d1e-4270-8e8e-549251cd823d":
+        host = 'localhost'
+        port = 27017
+        url = f"mongodb://{host}:{port}"
+        db = "local"
+        collection = "recipes"
+        return ItemRepositoryMongo(url=url, name=db, collection=collection)

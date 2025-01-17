@@ -1,0 +1,25 @@
+'exp': 1736932837, // Expiration
+'iat': 1736931337, // Début de validité
+'jti': '9374dcd6-3346-40a3-9519-b45c3d1c0ef6', // ID du token
+'iss': 'https://iam.karned.bzh/realms/Karned',
+'aud': ['karned','account','api-recipe'], // audiences
+'sub': 'd3f48a42-0d1e-4270-8e8e-549251cd823d',
+'typ': 'Bearer',
+'azp': 'karned',
+'sid': '09b95b0f-3f77-49f7-bf52-2bebe2669147',
+'acr': '1',
+'allowed-origins': ['http://localhost:8501','http://localhost:8000'],
+'realm_access': {'roles': ['offline_access','uma_authorization','default-roles-karned']},
+'resource_access': {'account': {'roles': ['manage-account','manage-account-links','delete-account','view-profile']},
+'api-recipe': {'roles': ['read','update','create','delete']}}, // roles
+'scope': 'profile email',
+'email_verified': True,
+'name': 'Killian KOPP',
+'preferred_username': 'killian',
+'given_name': 'Killian',
+'family_name': 'KOPP',
+'email': 'killiankopp@gmail.com',
+'client_id': 'karned',
+'username': 'killian',
+'token_type': 'Bearer',
+'active': True

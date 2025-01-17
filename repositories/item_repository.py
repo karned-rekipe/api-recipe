@@ -15,13 +15,8 @@ class ItemRepositoryMongo(ItemRepository):
         self.name = name
         self.collection = collection
 
-        self.client = None
-        self.db = None
-
-    def __enter__(self):
         self.client = MongoClient(self.url)
         self.db = self.client[self.name]
-        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.client.close()
@@ -52,3 +47,6 @@ class ItemRepositoryMongo(ItemRepository):
 
     def delete_item(self, item_id: str) -> None:
         self.db[self.collection].delete_one({"id": item_id})
+
+    def close(self):
+        self.client.close()
