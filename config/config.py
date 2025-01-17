@@ -1,5 +1,5 @@
-import logging
 import os
+import logging
 from repositories.item_repository import ItemRepositoryMongo
 
 API_NAME = os.environ['API_NAME']
