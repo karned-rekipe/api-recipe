@@ -12,16 +12,20 @@ class DBConnectionMiddleware(BaseHTTPMiddleware):
     @log_time_async
     async def dispatch( self, request: Request, call_next ):
         logging.info("DBConnectionMiddleware")
-        try:
-            repo = get_db(request.state.token_info.get('user_id'))
+        without_db_paths = ['/favicon.ico', '/docs', '/openapi.json']
+        logging.info(request.url.path)
 
-            if repo is None:
-                raise Exception("DBConnectionMiddleware: Error: No repository found")
+        if request.url.path.lower() not in without_db_paths:
+            try:
+                repo = get_db(request.state.token_info.get('user_id'))
 
-            request.state.repo = repo
-        except Exception as e:
-            logging.error(f"DBConnectionMiddleware: Error: {e}")
-            raise e
+                if repo is None:
+                    raise Exception("DBConnectionMiddleware: Error: No repository found")
+
+                request.state.repo = repo
+            except Exception as e:
+                logging.error(f"DBConnectionMiddleware: Error: {e}")
+                raise e
 
         try:
             response = await call_next(request)

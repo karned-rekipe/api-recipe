@@ -6,8 +6,7 @@ from services.items_service import create_item, get_items, get_item, update_item
 
 
 router = APIRouter(
-    tags=[API_TAG_NAME],
-    dependencies=[Depends(verify_token)]
+    tags=[API_TAG_NAME]
 )
 
 
@@ -20,7 +19,7 @@ async def create_new_item(request: Request, item: Item) -> dict:
     return {"uuid": new_item_id}
 
 
-@router.get("/", status_code=status.HTTP_200_OK, dependencies=[Depends(verify_token)], response_model=list[Item])
+@router.get("/", status_code=status.HTTP_200_OK, response_model=list[Item])
 @check_permissions(['read', 'read_own'])
 async def read_items(request: Request):
     repo = request.state.repo
