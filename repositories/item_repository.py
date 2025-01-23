@@ -27,11 +27,11 @@ class ItemRepositoryMongo(ItemRepository):
     def create_item(self, item_create: Item) -> str:
         item_data = item_create.model_dump()
         item_data["_id"] = str(uuid4())
-        new_item_id = self.db[self.collection].insert_one(item_data)
-        return new_item_id.inserted_id
+        new_uuid = self.db[self.collection].insert_one(item_data)
+        return new_uuid.inserted_id
 
-    def get_item(self, item_id: int) -> dict:
-        result = self.db[self.collection].find_one({"_id": item_id})
+    def get_item(self, uuid: str) -> dict:
+        result = self.db[self.collection].find_one({"_id": uuid})
         item = item_serial(result)
         return item
 
@@ -40,13 +40,13 @@ class ItemRepositoryMongo(ItemRepository):
         items = list_item_serial(result)
         return items
 
-    def update_item(self, item_id: str, item_update: Item) -> None:
+    def update_item(self, uuid: str, item_update: Item) -> None:
         update_data = {"$set": item_update.model_dump()}
-        self.db[self.collection].find_one_and_update({"_id": item_id}, update_data)
+        self.db[self.collection].find_one_and_update({"_id": uuid}, update_data)
 
 
-    def delete_item(self, item_id: str) -> None:
-        self.db[self.collection].delete_one({"id": item_id})
+    def delete_item(self, uuid: str) -> None:
+        self.db[self.collection].delete_one({"id": uuid})
 
     def close(self):
         self.client.close()
