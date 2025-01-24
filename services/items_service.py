@@ -3,13 +3,13 @@ from models.item_model import Item
 
 def create_item(new_item, repository) -> str:
     try:
-        new_item_id = repository.create_item(new_item)
-        if not isinstance(new_item_id, str):
+        new_uuid = repository.create_item(new_item)
+        if not isinstance(new_uuid, str):
             raise TypeError("The method create_item did not return a str.")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred while creating the item: {e}")
 
-    return new_item_id
+    return new_uuid
 
 def get_items(repository) -> list[Item]:
     try:
@@ -22,9 +22,9 @@ def get_items(repository) -> list[Item]:
     return items
 
 
-def get_item(item_id: str, repository) -> Item:
+def get_item(uuid: str, repository) -> Item:
     try:
-        item = repository.get_item(item_id)
+        item = repository.get_item(uuid)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred while get item: {e}")
 
@@ -33,14 +33,14 @@ def get_item(item_id: str, repository) -> Item:
 
     return item
 
-def update_item(item_id: str, item_update: Item, repository) -> None:
+def update_item(uuid: str, item_update: Item, repository) -> None:
     try:
-        repository.update_item(item_id, item_update)
+        repository.update_item(uuid, item_update)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred while updating the item: {e}")
 
-def delete_item(item_id: str, repository) -> None:
+def delete_item(uuid: str, repository) -> None:
     try:
-        repository.delete_item(item_id)
+        repository.delete_item(uuid)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred while deleting the item: {e}")
