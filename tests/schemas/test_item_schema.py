@@ -3,6 +3,7 @@ from schemas.item_schema import item_serial, list_item_serial
 
 def test_item_serial():
     item = {
+        "created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d",
         "_id": "12345",
         "name": "Recipe Name",
         "description": "This is a recipe description.",
@@ -13,18 +14,19 @@ def test_item_serial():
         "attributes": ["vegan", "gluten-free"],
         "utensils": ["pan", "knife"],
         "ingredients": [
-            {"name": "Sugar", "quantity": 100, "unit": "grams"},
-            {"name": "Salt"}
+            {"created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d", "name": "Sugar", "quantity": 100, "unit": "grams"},
+            {"created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d", "name": "Salt"}
         ],
         "steps": [
-            {"step_number": 1, "description": "First step", "duration": 10},
-            {"step_number": 2, "description": "Second step"}
+            {"created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d", "step_number": 1, "description": "First step", "duration": 10},
+            {"created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d", "step_number": 2, "description": "Second step"}
         ],
         "thumbnail_url": "http://example.com/thumbnail.jpg",
         "large_image_url": "http://example.com/large_image.jpg",
         "source_reference": "Source Reference"
     }
     expected_output = {
+        "created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d",
         "id": "12345",
         "name": "Recipe Name",
         "description": "This is a recipe description.",
@@ -35,12 +37,12 @@ def test_item_serial():
         "attributes": ["vegan", "gluten-free"],
         "utensils": ["pan", "knife"],
         "ingredients": [
-            {"name": "Sugar", "quantity": 100, "unit": "grams"},
-            {"name": "Salt", "quantity": None, "unit": None}
+            {"created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d", "name": "Sugar", "quantity": 100, "unit": "grams"},
+            {"created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d", "name": "Salt", "quantity": None, "unit": None}
         ],
         "steps": [
-            {"step_number": 1, "description": "First step", "duration": 10},
-            {"step_number": 2, "description": "Second step", "duration": None}
+            {"created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d", "step_number": 1, "description": "First step", "duration": 10},
+            {"created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d", "step_number": 2, "description": "Second step", "duration": None}
         ],
         "thumbnail_url": "http://example.com/thumbnail.jpg",
         "large_image_url": "http://example.com/large_image.jpg",
@@ -49,10 +51,12 @@ def test_item_serial():
     assert item_serial(item) == expected_output
 
     item_minimal = {
+        "created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d",
         "_id": "67890",
         "name": "Minimal Recipe"
     }
     expected_output_minimal = {
+        "created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d",
         "id": "67890",
         "name": "Minimal Recipe",
         "description": None,
@@ -74,6 +78,7 @@ def test_item_serial():
 def test_list_item_serial():
     items = [
         {
+            "created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d",
             "_id": "12345",
             "name": "Recipe Name",
             "description": "This is a recipe description.",
@@ -84,24 +89,26 @@ def test_list_item_serial():
             "attributes": ["vegan", "gluten-free"],
             "utensils": ["pan", "knife"],
             "ingredients": [
-                {"name": "Sugar", "quantity": 100, "unit": "grams"},
-                {"name": "Salt"}
+                {"created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d", "name": "Sugar", "quantity": 100, "unit": "grams"},
+                {"created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d", "name": "Salt"}
             ],
             "steps": [
-                {"step_number": 1, "description": "First step", "duration": 10},
-                {"step_number": 2, "description": "Second step"}
+                {"created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d", "step_number": 1, "description": "First step", "duration": 10},
+                {"created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d", "step_number": 2, "description": "Second step"}
             ],
             "thumbnail_url": "http://example.com/thumbnail.jpg",
             "large_image_url": "http://example.com/large_image.jpg",
             "source_reference": "Source Reference"
         },
         {
+            "created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d",
             "_id": "67890",
             "name": "Minimal Recipe"
         }
     ]
     expected_output = [
         {
+            "created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d",
             "id": "12345",
             "name": "Recipe Name",
             "description": "This is a recipe description.",
@@ -112,18 +119,19 @@ def test_list_item_serial():
             "attributes": ["vegan", "gluten-free"],
             "utensils": ["pan", "knife"],
             "ingredients": [
-                {"name": "Sugar", "quantity": 100, "unit": "grams"},
-                {"name": "Salt", "quantity": None, "unit": None}
+                {"created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d", "name": "Sugar", "quantity": 100, "unit": "grams"},
+                {"created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d", "name": "Salt", "quantity": None, "unit": None}
             ],
             "steps": [
-                {"step_number": 1, "description": "First step", "duration": 10},
-                {"step_number": 2, "description": "Second step", "duration": None}
+                {"created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d", "step_number": 1, "description": "First step", "duration": 10},
+                {"created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d", "step_number": 2, "description": "Second step", "duration": None}
             ],
             "thumbnail_url": "http://example.com/thumbnail.jpg",
             "large_image_url": "http://example.com/large_image.jpg",
             "source_reference": "Source Reference"
         },
         {
+            "created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d",
             "id": "67890",
             "name": "Minimal Recipe",
             "description": None,

@@ -4,8 +4,8 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi import  Request
 import logging
 
-from config.config import get_db
 from decorators.log_time import log_time_async
+from services.db_service import get_db
 
 
 class DBConnectionMiddleware(BaseHTTPMiddleware):
