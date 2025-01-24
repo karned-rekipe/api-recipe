@@ -6,7 +6,7 @@ def test_ingredient_serial():
         "created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d",
         "name": "Sugar",
         "quantity": 100,
-        "unit": "grams",
+        "unit": "grams"
     }
     expected_output = {
         "created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d",
