@@ -22,25 +22,29 @@ class TokenVerificationMiddleware(BaseHTTPMiddleware):
     async def dispatch( self, request: Request, call_next ) -> Response:
         logging.info("TokenVerificationMiddleware")
 
-        auth_header = request.headers.get("Authorization")
-        if not auth_header or not auth_header.startswith("Bearer "):
-            raise HTTPException(status_code=401, detail="Token manquant ou invalide")
+        unprotected_paths = ['/favicon.ico', '/docs', '/openapi.json']
+        logging.info(request.url.path)
 
-        token = auth_header.split(" ")[1]
+        if request.url.path.lower() not in unprotected_paths:
+            auth_header = request.headers.get("Authorization")
+            if not auth_header or not auth_header.startswith("Bearer "):
+                raise HTTPException(status_code=401, detail="Token manquant ou invalide")
 
-        logging.info(f"Token: {token}")
-        token_info = self.get_token_info(token)
-        logging.info(f"TokenVerificationMiddleware : Token info: {token_info}")
+            token = auth_header.split(" ")[1]
 
-        if not self.is_token_active(token_info):
-            raise HTTPException(status_code=401, detail="Token is not active")
+            logging.info(f"Token: {token}")
+            token_info = self.get_token_info(token)
+            logging.info(f"TokenVerificationMiddleware : Token info: {token_info}")
 
-        if not self.is_token_valid_audience(token_info):
-            raise HTTPException(status_code=401, detail="Token is not valid for this audience")
+            if not self.is_token_active(token_info):
+                raise HTTPException(status_code=401, detail="Token is not active")
 
-        state_token_info = self.generate_state_info(token_info)
-        request.state.token_info = state_token_info
-        logging.info(f"TokenVerificationMiddleware: State token info: {state_token_info}")
+            if not self.is_token_valid_audience(token_info):
+                raise HTTPException(status_code=401, detail="Token is not valid for this audience")
+
+            state_token_info = self.generate_state_info(token_info)
+            request.state.token_info = state_token_info
+            logging.info(f"TokenVerificationMiddleware: State token info: {state_token_info}")
 
         response = await call_next(request)
         return response
