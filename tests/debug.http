@@ -13,7 +13,7 @@ Content-Type: application/json
 ### Utilise la route / protégée
 GET http://127.0.0.1:8010/
 accept: application/json
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer totoken
 
 ### Crée un item
 POST http://127.0.0.1:8010/

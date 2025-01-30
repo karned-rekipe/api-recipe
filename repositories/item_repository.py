@@ -1,4 +1,6 @@
+import re
 from typing import List
+from urllib.parse import urlparse
 from uuid import uuid4
 
 from pymongo import MongoClient
@@ -7,16 +9,31 @@ from interfaces.item_interface import ItemRepository
 from models.item_model import Item
 from schemas.item_schema import list_item_serial, item_serial
 
+def check_uri(uri):
+    if not re.match(r"^mongodb://", uri):
+        raise ValueError("Invalid URI: URI must start with 'mongodb://'")
+
+
+def extract_database(uri: str) -> str:
+    parsed_uri = urlparse(uri)
+    db_name = parsed_uri.path.lstrip("/")
+
+    if not db_name:
+        raise ValueError("L'URI MongoDB ne contient pas de nom de base de données.")
+
+    return db_name
+
 
 class ItemRepositoryMongo(ItemRepository):
 
-    def __init__(self, url: str, name: str, collection: str):
-        self.url = url
-        self.name = name
-        self.collection = collection
+    def __init__(self, uri):
+        check_uri(uri)
+        database = extract_database(uri)
 
-        self.client = MongoClient(self.url)
-        self.db = self.client[self.name]
+        self.uri = uri
+        self.client = MongoClient(self.uri)
+        self.db = self.client[database]
+        self.collection = "recipes"
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.client.close()

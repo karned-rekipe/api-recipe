@@ -6,7 +6,6 @@ from fastapi import HTTPException
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import Response
-
 from config.config import API_NAME, KEYCLOAK_HOST, KEYCLOAK_REALM
 from decorators.log_time import log_time_async
 from services.inmemory_service import get_redis_api_db
@@ -23,7 +22,6 @@ class TokenVerificationMiddleware(BaseHTTPMiddleware):
         logging.info("TokenVerificationMiddleware")
 
         unprotected_paths = ['/favicon.ico', '/docs', '/openapi.json']
-        logging.info(request.url.path)
 
         if request.url.path.lower() not in unprotected_paths:
             auth_header = request.headers.get("Authorization")
