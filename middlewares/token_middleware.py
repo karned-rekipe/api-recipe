@@ -17,7 +17,6 @@ r = get_redis_api_db()
 
 def get_licences( token: str ) -> list:
     url = "https://n8n.koden.bzh/webhook/35031fea-4e09-4b7a-9fa3-6f92e0b4a7e1"
-
     response = httpx.get(url, headers={"Authorization": f"Bearer {token}"})
     if response.status_code != 200:
         raise HTTPException(status_code=500, detail="Licences request failed")
@@ -47,7 +46,8 @@ def generate_state_info( token_info: dict ) -> dict:
         "user_display_name": token_info.get("preferred_username"),
         "user_email": token_info.get("email"),
         "user_audiences": token_info.get("aud"),
-        "user_roles": token_info.get("resource_access").get(API_NAME).get("roles")
+        "user_roles": token_info.get("resource_access").get(API_NAME).get("roles"),
+        "cached_time": token_info.get("cached_time")
     }
 
 
@@ -94,6 +94,8 @@ def introspect_token( token: str ) -> dict:
 
 
 def prepare_cache_token( token: str, token_info: dict ) -> dict:
+    cached_time = int(time.time())
+    token_info["cached_time"] = cached_time
     licenses = get_licences(token)
     licenses_token = filter_licences(licenses)
     token_info["licenses"] = licenses_token
@@ -107,6 +109,10 @@ def get_token_info( token: str ) -> dict:
         cache_token = prepare_cache_token(token, response)
         write_cache_token(token, cache_token)
     return response
+
+
+def delete_cache_token( token: str ):
+    r.delete(token)
 
 
 def is_unprotected_path( path: str ) -> bool:
@@ -125,7 +131,19 @@ def is_headers_token_present( request: Request ) -> bool:
 
 def extract_token( request: Request ) -> str:
     auth_header = request.headers.get("Authorization")
-    return auth_header.split(" ")[1]
+    token = auth_header.split(" ")[1]
+    return token
+
+
+def refresh_cache_token( request: Request ):
+    check_headers_token(request)
+    token = extract_token(request)
+    delete_cache_token(token)
+    token_info = get_token_info(token)
+    check_token(token_info)
+    state_token_info = generate_state_info(token_info)
+    store_token_info_in_state(state_token_info, request)
+
 
 def store_token_info_in_state( state_token_info: dict, request: Request ):
     request.state.token_info = state_token_info
