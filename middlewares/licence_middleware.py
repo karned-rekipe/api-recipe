@@ -8,7 +8,6 @@ from starlette.responses import Response
 from decorators.log_time import log_time_async
 from middlewares.token_middleware import extract_token, get_token_info, is_unprotected_path, refresh_cache_token
 
-
 def extract_licence( request: Request ) -> str:
     return request.headers.get('licence')
 
@@ -29,6 +28,13 @@ def is_licence_found( request: Request, licence: str ):
     if not any(licence_data['uuid'] == licence for licence_data in licenses):
         return False
     return True
+
+def get_licence_info( request: Request, licence: str ) -> dict:
+    token = extract_token(request)
+    token_info = get_token_info(token)
+    licenses = token_info.get('licenses')
+    licence_info = next(licence_data for licence_data in licenses if licence_data['uuid'] == licence)
+    return licence_info
 
 def check_headers_licence( request: Request ):
     if not is_headers_licence_present(request):

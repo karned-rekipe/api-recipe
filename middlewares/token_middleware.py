@@ -16,6 +16,7 @@ r = get_redis_api_db()
 
 
 def get_licences( token: str ) -> list:
+    # TODO : remplacer l'url par celle de l'API de licences
     url = "https://n8n.koden.bzh/webhook/35031fea-4e09-4b7a-9fa3-6f92e0b4a7e1"
     response = httpx.get(url, headers={"Authorization": f"Bearer {token}"})
     if response.status_code != 200:
