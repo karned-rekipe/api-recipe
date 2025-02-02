@@ -6,8 +6,9 @@ from fastapi import HTTPException, Request
 import logging
 from decorators.log_time import log_time_async
 from middlewares.licence_middleware import get_licence_info
-from middlewares.token_middleware import extract_token, is_unprotected_path
+from middlewares.token_middleware import extract_token
 from repositories.item_repository import ItemRepositoryMongo
+from utils.path_util import is_unprotected_path
 
 
 def extract_credentials(request: Request):

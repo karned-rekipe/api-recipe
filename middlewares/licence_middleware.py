@@ -6,7 +6,9 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import Response
 from decorators.log_time import log_time_async
-from middlewares.token_middleware import extract_token, get_token_info, is_unprotected_path, refresh_cache_token
+from middlewares.token_middleware import extract_token, get_token_info, refresh_cache_token
+from utils.path_util import is_unprotected_path
+
 
 def extract_licence( request: Request ) -> str:
     return request.headers.get('licence')
