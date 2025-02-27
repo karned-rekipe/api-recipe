@@ -10,14 +10,29 @@ from middlewares.token_middleware import extract_token, get_token_info, refresh_
 from utils.path_util import is_unprotected_path
 
 
+def extract_entity( request: Request ):
+    token_info = get_token_info(extract_token(request))
+    if token_info is None:
+        raise HTTPException(status_code=403, detail="Token not found")
+    else:
+        licenses = token_info.get('licenses', [])
+        license_uuid = extract_licence(request)
+        for lic in licenses:
+            if str(lic.get('uuid')) == str(license_uuid):
+                return lic.get('entity_uuid')
+    raise HTTPException(status_code=500, detail="Entity not found")
+
+
 def extract_licence( request: Request ) -> str:
     return request.headers.get('licence')
+
 
 def is_headers_licence_present( request: Request ) -> bool:
     licence = extract_licence(request)
     if not licence:
         return False
     return True
+
 
 def is_licence_found( request: Request, licence: str ):
     token = extract_token(request)
@@ -31,6 +46,7 @@ def is_licence_found( request: Request, licence: str ):
         return False
     return True
 
+
 def get_licence_info( request: Request, licence: str ) -> dict:
     token = extract_token(request)
     token_info = get_token_info(token)
@@ -38,9 +54,11 @@ def get_licence_info( request: Request, licence: str ) -> dict:
     licence_info = next(licence_data for licence_data in licenses if licence_data['uuid'] == licence)
     return licence_info
 
+
 def check_headers_licence( request: Request ):
     if not is_headers_licence_present(request):
         raise HTTPException(status_code=403, detail="Licence header missing")
+
 
 def check_licence( request: Request, licence: str ):
     if not is_licence_found(request, licence):
@@ -49,6 +67,7 @@ def check_licence( request: Request, licence: str ):
             refresh_cache_token(request)
             if not is_licence_found(request, licence):
                 raise HTTPException(status_code=403, detail="Licence not found")
+
 
 class LicenceVerificationMiddleware(BaseHTTPMiddleware):
     def __init__( self, app ):
@@ -63,5 +82,7 @@ class LicenceVerificationMiddleware(BaseHTTPMiddleware):
             licence = extract_licence(request)
             check_licence(request, licence)
             request.state.licence = licence
+            entity_uuid = extract_entity(licence)
+            request.state.entity_uuid = entity_uuid
         response = await call_next(request)
         return response
