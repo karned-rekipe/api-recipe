@@ -8,7 +8,6 @@ ENV WORKERS 1
 ENV API_NAME api-recipe
 ENV API_TAG_NAME recipes
 
-ENV KEYCLOAK_URL https://iam.karned.bzh/realms/Karned/protocol/openid-connect
 ENV KEYCLOAK_HOST https://iam.karned.bzh
 ENV KEYCLOAK_REALM Karned
 ENV KEYCLOAK_CLIENT_ID karned
