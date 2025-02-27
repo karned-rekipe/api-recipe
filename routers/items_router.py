@@ -10,7 +10,7 @@ router = APIRouter(
 )
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED)
+@router.post("/v1/", status_code=status.HTTP_201_CREATED)
 @check_permissions(['create'])
 async def create_new_item(request: Request, item: Item) -> dict:
     repo = request.state.repo
@@ -19,14 +19,14 @@ async def create_new_item(request: Request, item: Item) -> dict:
     return {"uuid": new_uuid}
 
 
-@router.get("/", status_code=status.HTTP_200_OK, response_model=list[Item])
+@router.get("/v1/", status_code=status.HTTP_200_OK, response_model=list[Item])
 @check_permissions(['read', 'read_own'])
 async def read_items(request: Request):
     repo = request.state.repo
     return get_items(repo)
 
 
-@router.get("/{uuid}", status_code=status.HTTP_200_OK, response_model=Item)
+@router.get("/v1/{uuid}", status_code=status.HTTP_200_OK, response_model=Item)
 @check_permissions(['list', 'list_own'])
 async def read_item(request: Request, uuid: str):
     repo = request.state.repo
@@ -36,14 +36,14 @@ async def read_item(request: Request, uuid: str):
     return item
 
 
-@router.put("/{uuid}", status_code=status.HTTP_204_NO_CONTENT)
+@router.put("/v1/{uuid}", status_code=status.HTTP_204_NO_CONTENT)
 @check_permissions(['update', 'update_own'])
 async def update_existing_item(request: Request, uuid: str, item_update: Item):
     repo = request.state.repo
     update_item(uuid, item_update, repo)
 
 
-@router.delete("/{uuid}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/v1/{uuid}", status_code=status.HTTP_204_NO_CONTENT)
 @check_permissions(['delete', 'delete_own'])
 async def delete_existing_item(request: Request, uuid: str):
     repo = request.state.repo
