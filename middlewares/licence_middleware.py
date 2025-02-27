@@ -12,13 +12,15 @@ from utils.path_util import is_unprotected_path
 
 def extract_entity( request: Request ):
     token_info = get_token_info(extract_token(request))
-    if token_info is not None:
+    if token_info is None:
+        raise HTTPException(status_code=403, detail="Token not found")
+    else:
         licenses = token_info.get('licenses', [])
         license_uuid = extract_licence(request)
         for lic in licenses:
             if str(lic.get('uuid')) == str(license_uuid):
                 return lic.get('entity_uuid')
-    return None
+    raise HTTPException(status_code=500, detail="Entity not found")
 
 
 def extract_licence( request: Request ) -> str:
