@@ -80,9 +80,11 @@ class LicenceVerificationMiddleware(BaseHTTPMiddleware):
         if not is_unprotected_path(request.url.path):
             check_headers_licence(request)
             licence = extract_licence(request)
+            logging.info(f"licence_uuid: {licence}")
             check_licence(request, licence)
             request.state.licence = licence
-            entity_uuid = extract_entity(licence)
+            entity_uuid = extract_entity(request)
+            logging.info(f"entity_uuid: {entity_uuid}")
             request.state.entity_uuid = entity_uuid
         response = await call_next(request)
         return response

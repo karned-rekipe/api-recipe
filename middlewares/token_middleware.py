@@ -2,6 +2,7 @@ import logging
 import os
 import time
 from datetime import datetime, timezone
+from typing import Any
 
 import httpx
 from fastapi import HTTPException
@@ -23,7 +24,6 @@ def get_licences( token: str ) -> list:
     response = httpx.get(url, headers={"Authorization": f"Bearer {token}"})
     if response.status_code != 200:
         raise HTTPException(status_code=500, detail="Licences request failed")
-
     return response.json()
 
 def filter_licences( licences: list) -> list:
@@ -71,7 +71,7 @@ def is_token_active( token_info: dict ) -> bool:
     return False
 
 
-def read_cache_token( token: str ) -> dict:
+def read_cache_token( token: str ) -> Any | None:
     cached_result = r.get(token)
     if cached_result is not None:
         return eval(cached_result)
@@ -167,9 +167,11 @@ class TokenVerificationMiddleware(BaseHTTPMiddleware):
 
     @log_time_async
     async def dispatch( self, request: Request, call_next ) -> Response:
+        logging.info("TokenVerificationMiddleware")
         if not is_unprotected_path(request.url.path):
             check_headers_token(request)
             token = extract_token(request)
+            logging.info(f"token: {token}")
             token_info = get_token_info(token)
             check_token(token_info)
             state_token_info = generate_state_info(token_info)
