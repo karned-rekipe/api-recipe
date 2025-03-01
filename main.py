@@ -1,12 +1,11 @@
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 from fastapi.security import HTTPBearer
-from starlette.middleware import Middleware
 
 from middlewares.token_middleware import TokenVerificationMiddleware
 from middlewares.database_middleware import DBConnectionMiddleware
 from middlewares.licence_middleware import LicenceVerificationMiddleware
-from routers import items_router
+from routers import v1
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -50,4 +49,4 @@ app.add_middleware(DBConnectionMiddleware)
 app.add_middleware(LicenceVerificationMiddleware)
 app.add_middleware(TokenVerificationMiddleware)
 
-app.include_router(items_router.router)
+app.include_router(v1.router)
