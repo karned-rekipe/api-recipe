@@ -4,6 +4,9 @@ import httpx
 from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi import HTTPException, Request
 import logging
+
+from starlette.responses import JSONResponse
+
 from decorators.log_time import log_time_async
 from middlewares.licence_middleware import get_licence_info
 from middlewares.token_middleware import extract_token
@@ -37,14 +40,17 @@ class DBConnectionMiddleware(BaseHTTPMiddleware):
     async def dispatch( self, request: Request, call_next ):
         logging.info("DBConnectionMiddleware")
 
-        if not is_unprotected_path(request.url.path):
-            token = extract_token(request)
-            credential_uuid = extract_credentials(request)
-            logging.info(f"credential_uuid: {credential_uuid}")
-            credential = get_credential(token, credential_uuid)
-            repo = ItemRepositoryMongo(uri=credential.get('uri'))
-            check_repo(repo)
-            request.state.repo = repo
+        try:
+            if not is_unprotected_path(request.url.path):
+                token = extract_token(request)
+                credential_uuid = extract_credentials(request)
+                logging.info(f"credential_uuid: {credential_uuid}")
+                credential = get_credential(token, credential_uuid)
+                repo = ItemRepositoryMongo(uri=credential.get('uri'))
+                check_repo(repo)
+                request.state.repo = repo
 
-        response = await call_next(request)
-        return response
+            response = await call_next(request)
+            return response
+        except HTTPException as exc:
+            return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})

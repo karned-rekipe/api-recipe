@@ -1,17 +1,44 @@
+FROM python:3.12-slim AS builder
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir --user -r requirements.txt
+
 FROM python:3.12-slim
 
-ENV PYTHONUNBUFFERED True
-ENV APP_HOME /app
-ENV PORT 8000
-ENV WORKERS 1
+ENV PYTHONUNBUFFERED=True \
+    PORT=8000 \
+    WORKERS=1 \
+    API_NAME=api-recipe \
+    API_TAG_NAME=recipes
 
-ENV API_NAME api-recipe
-ENV API_TAG_NAME recipes
+ENV KEYCLOAK_HOST="" \
+    KEYCLOAK_REALM="" \
+    KEYCLOAK_CLIENT_ID="" \
+    KEYCLOAK_CLIENT_SECRET=""
 
-WORKDIR $APP_HOME
+ENV REDIS_HOST="" \
+    REDIS_PORT="" \
+    REDIS_DB="" \
+    REDIS_PASSWORD=""
+
+WORKDIR /app
+
+RUN groupadd -r appgroup && useradd -r -g appgroup appuser
+
+COPY --from=builder /root/.local /root/.local
 COPY . ./
-EXPOSE $PORT
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN chown -R appuser:appgroup /app
+
+USER appuser
+
+EXPOSE ${PORT}
 
 CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT} --workers ${WORKERS}"]

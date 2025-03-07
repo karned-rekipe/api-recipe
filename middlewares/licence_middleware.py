@@ -4,7 +4,7 @@ import time
 from fastapi import HTTPException
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
-from starlette.responses import Response
+from starlette.responses import JSONResponse, Response
 from decorators.log_time import log_time_async
 from middlewares.token_middleware import extract_token, get_token_info, refresh_cache_token
 from utils.path_util import is_unprotected_path
@@ -77,14 +77,17 @@ class LicenceVerificationMiddleware(BaseHTTPMiddleware):
     async def dispatch( self, request: Request, call_next ) -> Response:
         logging.info("LicenceVerificationMiddleware")
 
-        if not is_unprotected_path(request.url.path):
-            check_headers_licence(request)
-            licence = extract_licence(request)
-            logging.info(f"licence_uuid: {licence}")
-            check_licence(request, licence)
-            request.state.licence = licence
-            entity_uuid = extract_entity(request)
-            logging.info(f"entity_uuid: {entity_uuid}")
-            request.state.entity_uuid = entity_uuid
-        response = await call_next(request)
-        return response
+        try:
+            if not is_unprotected_path(request.url.path):
+                check_headers_licence(request)
+                licence = extract_licence(request)
+                logging.info(f"licence_uuid: {licence}")
+                check_licence(request, licence)
+                request.state.licence = licence
+                entity_uuid = extract_entity(request)
+                logging.info(f"entity_uuid: {entity_uuid}")
+                request.state.entity_uuid = entity_uuid
+            response = await call_next(request)
+            return response
+        except HTTPException as exc:
+            return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
