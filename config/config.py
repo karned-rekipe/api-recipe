@@ -13,6 +13,6 @@ REDIS_PORT = int(os.environ['REDIS_PORT'])
 REDIS_DB = int(os.environ['REDIS_DB'])
 REDIS_PASSWORD = os.environ['REDIS_PASSWORD']
 
-UNPROTECTED_PATHS = ['/favicon.ico', '/docs', '/openapi.json']
+UNPROTECTED_PATHS = ['/favicon.ico', '/docs', '/recipe/openapi.json']
 
 URL_API_GATEWAY = os.environ['URL_API_GATEWAY']

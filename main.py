@@ -13,7 +13,7 @@ logging.info("Starting API")
 
 bearer_scheme = HTTPBearer()
 
-app = FastAPI()
+app = FastAPI(openapi_url="/recipe/openapi.json")
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
