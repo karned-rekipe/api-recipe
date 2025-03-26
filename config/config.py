@@ -13,4 +13,4 @@ REDIS_PASSWORD = os.environ['REDIS_PASSWORD']
 
 UNPROTECTED_PATHS = ['/favicon.ico', '/docs', '/openapi.json']
 
-API_GATEWAY_URL = os.environ['API_GATEWAY_URL']
+URL_API_GATEWAY = os.environ['URL_API_GATEWAY']

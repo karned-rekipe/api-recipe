@@ -9,7 +9,7 @@ from fastapi import HTTPException
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import Response
-from config.config import API_NAME, KEYCLOAK_HOST, KEYCLOAK_REALM, API_GATEWAY_URL
+from config.config import API_NAME, KEYCLOAK_HOST, KEYCLOAK_REALM, URL_API_GATEWAY
 from decorators.log_time import log_time_async
 from services.inmemory_service import get_redis_api_db
 from utils.path_util import is_unprotected_path
@@ -18,7 +18,7 @@ r = get_redis_api_db()
 
 
 def get_licences( token: str ) -> list:
-    response = httpx.get(f"{API_GATEWAY_URL}/licence/v1/mine", headers={"Authorization": f"Bearer {token}"})
+    response = httpx.get(f"{URL_API_GATEWAY}/licence/v1/mine", headers={"Authorization": f"Bearer {token}"})
     if response.status_code != 200:
         raise HTTPException(status_code=500, detail="Licences request failed")
     return response.json()
