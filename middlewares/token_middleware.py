@@ -9,7 +9,7 @@ from fastapi import HTTPException
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
-from config.config import API_NAME, KEYCLOAK_HOST, KEYCLOAK_REALM, KEYCLOAK_CLIENT_ID, KEYCLOAK_CLIENT_SECRET
+from config.config import API_NAME, KEYCLOAK_HOST, KEYCLOAK_REALM, KEYCLOAK_CLIENT_ID, KEYCLOAK_CLIENT_SECRET, URL_API_GATEWAY
 from decorators.log_time import log_time_async
 from services.inmemory_service import get_redis_api_db
 from utils.path_util import is_unprotected_path
@@ -18,10 +18,7 @@ r = get_redis_api_db()
 
 
 def get_licences( token: str ) -> list:
-    # TODO : remplacer l'url par celle de l'API de licences
-    # TODO : faire remonter les erreurs depuis l'API de licences
-    url = "https://n8n.koden.bzh/webhook/35031fea-4e09-4b7a-9fa3-6f92e0b4a7e1"
-    response = httpx.get(url, headers={"Authorization": f"Bearer {token}"})
+    response = httpx.get(f"{URL_API_GATEWAY}/licence/v1/mine", headers={"Authorization": f"Bearer {token}"})
     if response.status_code != 200:
         raise HTTPException(status_code=500, detail="Licences request failed")
     return response.json()

@@ -14,3 +14,5 @@ REDIS_DB = int(os.environ['REDIS_DB'])
 REDIS_PASSWORD = os.environ['REDIS_PASSWORD']
 
 UNPROTECTED_PATHS = ['/favicon.ico', '/docs', '/openapi.json']
+
+URL_API_GATEWAY = os.environ['URL_API_GATEWAY']
