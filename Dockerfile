@@ -28,6 +28,8 @@ ENV REDIS_HOST="" \
     REDIS_DB="" \
     REDIS_PASSWORD=""
 
+ENV URL_API_GATEWAY=""
+
 WORKDIR /app
 
 RUN groupadd -r appgroup && useradd -r -g appgroup appuser
