@@ -33,7 +33,6 @@ def filter_licences( licences: list) -> list:
             "name": lic["name"],
             "iat": lic["iat"],
             "exp": lic["exp"],
-            "credential_uuid": lic["credential_uuid"],
             "entity_uuid": lic["entity_uuid"]
         }
         for lic in licences if lic["iat"] < now < lic["exp"]

@@ -1,5 +1,3 @@
-import time
-
 import httpx
 from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi import HTTPException, Request
@@ -7,28 +5,45 @@ import logging
 
 from starlette.responses import JSONResponse
 
+from config.config import URL_API_GATEWAY
 from decorators.log_time import log_time_async
-from middlewares.licence_middleware import get_licence_info
 from middlewares.token_middleware import extract_token
 from repositories.item_repository import ItemRepositoryMongo
+from services.inmemory_service import get_redis_api_db
 from utils.path_util import is_unprotected_path
 
+r = get_redis_api_db()
 
-def extract_credentials(request: Request):
-    licence_info = get_licence_info(request, request.state.licence)
-    credential = licence_info.get('credential_uuid')
-    return credential
 
-def get_credential( token: str, credential_uuid: str) -> dict:
-    # TODO: Replace with real URL
-    url = "https://n8n.koden.bzh/webhook/5feaeeb0-a88d-4748-81e7-515e4388e3d4"
-    logging.info(f"get_credential: {credential_uuid}")
-    response = httpx.get(url, headers={"Authorization": f"Bearer {token}"})
+def read_cache_credential(licence: str) -> dict | None:
+    cache_key = f"{licence}_database"
+    cached_result = r.get(cache_key)
+    if cached_result is not None:
+        logging.info(f"Using cached database credential for licence {licence}")
+        return eval(cached_result)
+    return None
+
+
+def write_cache_credential(licence: str, credential: dict):
+    cache_key = f"{licence}_database"
+    r.set(cache_key, str(credential), ex=1800)
+    logging.info(f"Cached database credential for licence {licence}")
+
+
+def get_credential(token: str, licence: str) -> dict:
+    cached_credential = read_cache_credential(licence)
+    if cached_credential:
+        return cached_credential
+
+    response = httpx.get(url=f"{URL_API_GATEWAY}/credential/v1/database",
+                         headers={"Authorization": f"Bearer {token}", "licence": f"{licence}"})
     if response.status_code != 200:
-        raise HTTPException(status_code=500, detail="Licences request failed")
+        raise HTTPException(status_code=500, detail="Credential request failed")
 
-    return response.json()
+    credential = response.json()
+    write_cache_credential(licence, credential)
 
+    return credential
 
 def check_repo( repo ):
     if repo is None:
@@ -43,9 +58,9 @@ class DBConnectionMiddleware(BaseHTTPMiddleware):
         try:
             if not is_unprotected_path(request.url.path):
                 token = extract_token(request)
-                credential_uuid = extract_credentials(request)
-                logging.info(f"credential_uuid: {credential_uuid}")
-                credential = get_credential(token, credential_uuid)
+                credential = get_credential(token=token, licence=request.state.licence_uuid)
+                logging.info(f"credential: {credential}")
+
                 repo = ItemRepositoryMongo(uri=credential.get('uri'))
                 check_repo(repo)
                 request.state.repo = repo
