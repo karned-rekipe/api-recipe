@@ -7,6 +7,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 from decorators.log_time import log_time_async
+from middlewares.token_middleware import read_cache_token, write_cache_token
 from services.inmemory_service import get_redis_api_db
 from utils.path_util import is_unprotected_path
 from config.config import URL_API_GATEWAY
@@ -26,13 +27,14 @@ def is_headers_licence_present(request: Request) -> bool:
     return True
 
 
-def check_headers_licence(request: Request):
+def check_headers_licence(request: Request) -> None:
     if not is_headers_licence_present(request):
         raise HTTPException(status_code=403, detail="Licence header missing")
 
 
-def is_licence_found(request: Request, licence: str):
-    licenses = request.state.licenses
+def is_licence_found(request: Request, licence: str) -> bool:
+    logging.info(f"License : is_licence_found")
+    licenses = getattr(request.state, 'licenses', None)
     if not licenses:
         return False
     if not any(licence_data['uuid'] == licence for licence_data in licenses):
@@ -41,7 +43,8 @@ def is_licence_found(request: Request, licence: str):
 
 
 def get_licences(token: str) -> list:
-    response = httpx.get(f"{URL_API_GATEWAY}/licence/v1/mine", headers={"Authorization": f"Bearer {token}"})
+    logging.info(f"License : get_licences")
+    response = httpx.get(f"{URL_API_GATEWAY}/license/v1/mine", headers={"Authorization": f"Bearer {token}"})
     if response.status_code != 200:
         raise HTTPException(status_code=500, detail="Licences request failed")
     return response.json()
@@ -68,22 +71,32 @@ def prepare_licences(token: str) -> list:
     return filter_licences(licenses)
 
 
-def refresh_licences(request: Request):
-    token = request.state.token
+def refresh_cache_token(request: Request) -> dict:
+    logging.info(f"License : refresh_cache_token")
+    cache_token = read_cache_token(getattr(request.state, 'token', None))
+    cache_token['licenses'] = getattr(request.state, 'licenses', None)
+    logging.info(f"cache_token: {cache_token}")
+    return cache_token
+
+
+def refresh_licences(request: Request) -> None:
+    logging.info(f"License : refresh_licences")
+    token = getattr(request.state, 'token', None)
     licenses = prepare_licences(token)
     request.state.licenses = licenses
+    write_cache_token(token=token, cache_token=refresh_cache_token(request))
 
 
-def check_licence(request: Request, licence: str):
+def check_licence(request: Request, licence: str) -> None:
     if not is_licence_found(request, licence):
         refresh_licences(request)
         if not is_licence_found(request, licence):
             raise HTTPException(status_code=403, detail="Licence not found")
 
 
-def extract_entity(request: Request):
-    licenses = request.state.licenses
-    license_uuid = request.state.licence_uuid
+def extract_entity(request: Request) -> str:
+    licenses = getattr(request.state, 'licenses', None)
+    license_uuid = getattr(request.state, 'licence_uuid', None)
     for lic in licenses:
         if str(lic.get('uuid')) == str(license_uuid):
             return lic.get('entity_uuid')
