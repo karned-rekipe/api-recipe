@@ -9,7 +9,7 @@ from starlette.responses import JSONResponse, Response
 from decorators.log_time import log_time_async
 from middlewares.token_middleware import read_cache_token, write_cache_token
 from services.inmemory_service import get_redis_api_db
-from utils.path_util import is_unprotected_path
+from utils.path_util import is_unprotected_path, is_unlicensed_path
 from config.config import URL_API_GATEWAY
 
 
@@ -83,7 +83,7 @@ def refresh_licences(request: Request) -> None:
     logging.info(f"License : refresh_licences")
     token = getattr(request.state, 'token', None)
     licenses = prepare_licences(token)
-    request.state.licenses = licenses
+    setattr(request.state, 'licenses', licenses)
     write_cache_token(token=token, cache_token=refresh_cache_token(request))
 
 
@@ -111,15 +111,15 @@ class LicenceVerificationMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next) -> Response:
         logging.info("LicenceVerificationMiddleware")
         try:
-            if not is_unprotected_path(request.url.path):
+            if not is_unprotected_path(request.url.path) and not is_unlicensed_path(request.url.path):
                 check_headers_licence(request)
                 licence_uuid = extract_licence(request)
                 logging.info(f"licence_uuid: {licence_uuid}")
                 check_licence(request, licence_uuid)
-                request.state.licence_uuid = licence_uuid
+                setattr(request.state, 'licence_uuid', licence_uuid)
                 entity_uuid = extract_entity(request)
                 logging.info(f"entity_uuid: {entity_uuid}")
-                request.state.entity_uuid = entity_uuid
+                setattr(request.state, 'entity_uuid', entity_uuid)
             response = await call_next(request)
             return response
         except HTTPException as exc:
