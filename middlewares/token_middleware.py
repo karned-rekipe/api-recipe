@@ -1,7 +1,6 @@
 import logging
 import os
 import time
-from datetime import datetime, timezone
 from typing import Any
 
 import httpx
@@ -9,36 +8,12 @@ from fastapi import HTTPException
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
-from config.config import API_NAME, KEYCLOAK_HOST, KEYCLOAK_REALM, KEYCLOAK_CLIENT_ID, KEYCLOAK_CLIENT_SECRET, URL_API_GATEWAY
+from config.config import API_NAME, KEYCLOAK_HOST, KEYCLOAK_REALM, KEYCLOAK_CLIENT_ID, KEYCLOAK_CLIENT_SECRET
 from decorators.log_time import log_time_async
 from services.inmemory_service import get_redis_api_db
 from utils.path_util import is_unprotected_path
 
 r = get_redis_api_db()
-
-
-def get_licences( token: str ) -> list:
-    response = httpx.get(f"{URL_API_GATEWAY}/licence/v1/mine", headers={"Authorization": f"Bearer {token}"})
-    if response.status_code != 200:
-        raise HTTPException(status_code=500, detail="Licences request failed")
-    return response.json()
-
-def filter_licences( licences: list) -> list:
-    now = int(datetime.now(timezone.utc).timestamp())
-
-    licences_filtered = [
-        {
-            "uuid": lic["uuid"],
-            "type_uuid": lic["type_uuid"],
-            "name": lic["name"],
-            "iat": lic["iat"],
-            "exp": lic["exp"],
-            "entity_uuid": lic["entity_uuid"]
-        }
-        for lic in licences if lic["iat"] < now < lic["exp"]
-    ]
-
-    return licences_filtered
 
 def generate_state_info( token_info: dict ) -> dict:
     return {
@@ -46,7 +21,7 @@ def generate_state_info( token_info: dict ) -> dict:
         "user_display_name": token_info.get("preferred_username"),
         "user_email": token_info.get("email"),
         "user_audiences": token_info.get("aud"),
-        "user_roles": token_info.get("resource_access").get(API_NAME).get("roles"),
+        "user_roles": token_info.get("resource_access"),
         "cached_time": token_info.get("cached_time")
     }
 
@@ -71,6 +46,7 @@ def read_cache_token( token: str ) -> Any | None:
     cached_result = r.get(token)
     if cached_result is not None:
         return eval(cached_result)
+    return None
 
 
 def write_cache_token( token: str, cache_token: dict ):
@@ -93,12 +69,9 @@ def introspect_token( token: str ) -> dict:
     return response.json()
 
 
-def prepare_cache_token( token: str, token_info: dict ) -> dict:
+def prepare_cache_token(token_info: dict ) -> dict:
     cached_time = int(time.time())
     token_info["cached_time"] = cached_time
-    licenses = get_licences(token)
-    licenses_token = filter_licences(licenses)
-    token_info["licenses"] = licenses_token
     return token_info
 
 
@@ -106,7 +79,7 @@ def get_token_info( token: str ) -> dict:
     response = read_cache_token(token)
     if not response:
         response = introspect_token(token)
-        cache_token = prepare_cache_token(token, response)
+        cache_token = prepare_cache_token(response)
         write_cache_token(token, cache_token)
     return response
 
