@@ -116,6 +116,7 @@ def refresh_cache_token( request: Request ):
 def store_token_info_in_state( state_token_info: dict, request: Request ):
     request.state.token_info = state_token_info
     request.state.user_uuid = state_token_info.get("user_uuid")
+    request.state.token = extract_token(request)
 
 
 def check_headers_token( request: Request ):
