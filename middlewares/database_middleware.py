@@ -36,7 +36,7 @@ def get_credential(token: str, licence: str) -> dict:
         return cached_credential
 
     response = httpx.get(url=f"{URL_API_GATEWAY}/credential/v1/database",
-                         headers={"Authorization": f"Bearer {token}", "licence": f"{licence}"})
+                         headers={"Authorization": f"Bearer {token}", "X-License-Key": f"{licence}"})
     if response.status_code != 200:
         raise HTTPException(status_code=500, detail="Credential request failed")
 
