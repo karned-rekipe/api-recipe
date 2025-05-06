@@ -2,34 +2,38 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://karned-rekipe.github.io/api-recipe/</loc>
-         <lastmod>2025-05-02</lastmod>
+         <lastmod>2025-05-06</lastmod>
     </url>
     <url>
          <loc>https://karned-rekipe.github.io/api-recipe/getting-started/</loc>
-         <lastmod>2025-05-02</lastmod>
+         <lastmod>2025-05-06</lastmod>
     </url>
     <url>
          <loc>https://karned-rekipe.github.io/api-recipe/reflexion/</loc>
-         <lastmod>2025-05-02</lastmod>
+         <lastmod>2025-05-06</lastmod>
     </url>
     <url>
          <loc>https://karned-rekipe.github.io/api-recipe/token_explain/</loc>
-         <lastmod>2025-05-02</lastmod>
+         <lastmod>2025-05-06</lastmod>
     </url>
     <url>
          <loc>https://karned-rekipe.github.io/api-recipe/api/overview/</loc>
-         <lastmod>2025-05-02</lastmod>
+         <lastmod>2025-05-06</lastmod>
+    </url>
+    <url>
+         <loc>https://karned-rekipe.github.io/api-recipe/development/code_coverage/</loc>
+         <lastmod>2025-05-06</lastmod>
     </url>
     <url>
          <loc>https://karned-rekipe.github.io/api-recipe/development/contributing/</loc>
-         <lastmod>2025-05-02</lastmod>
+         <lastmod>2025-05-06</lastmod>
     </url>
     <url>
          <loc>https://karned-rekipe.github.io/api-recipe/development/github-pages/</loc>
-         <lastmod>2025-05-02</lastmod>
+         <lastmod>2025-05-06</lastmod>
     </url>
     <url>
          <loc>https://karned-rekipe.github.io/api-recipe/development/setup/</loc>
-         <lastmod>2025-05-02</lastmod>
+         <lastmod>2025-05-06</lastmod>
     </url>
 </urlset>
