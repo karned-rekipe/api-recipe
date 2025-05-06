@@ -1,19 +1,22 @@
 import os
 
-API_NAME = os.environ['API_NAME']
-API_TAG_NAME = os.environ['API_TAG_NAME']
+# API Configuration
+API_NAME = os.environ.get('API_NAME', 'api-recipe')
+API_TAG_NAME = os.environ.get('API_TAG_NAME', 'recipes')
 
-URL_API_GATEWAY = os.environ['URL_API_GATEWAY']
+URL_API_GATEWAY = os.environ.get('URL_API_GATEWAY', 'http://localhost:8000')
 
-KEYCLOAK_HOST = os.environ['KEYCLOAK_HOST']
-KEYCLOAK_REALM = os.environ['KEYCLOAK_REALM']
-KEYCLOAK_CLIENT_ID = os.environ['KEYCLOAK_CLIENT_ID']
-KEYCLOAK_CLIENT_SECRET = os.environ['KEYCLOAK_CLIENT_SECRET']
+# Keycloak Configuration
+KEYCLOAK_HOST = os.environ.get('KEYCLOAK_HOST', 'http://localhost:8080')
+KEYCLOAK_REALM = os.environ.get('KEYCLOAK_REALM', 'master')
+KEYCLOAK_CLIENT_ID = os.environ.get('KEYCLOAK_CLIENT_ID', 'test-client')
+KEYCLOAK_CLIENT_SECRET = os.environ.get('KEYCLOAK_CLIENT_SECRET', 'test-secret')
 
-REDIS_HOST = os.environ['REDIS_HOST']
-REDIS_PORT = int(os.environ['REDIS_PORT'])
-REDIS_DB = int(os.environ['REDIS_DB'])
-REDIS_PASSWORD = os.environ['REDIS_PASSWORD']
+# Redis Configuration
+REDIS_HOST = os.environ.get('REDIS_HOST', 'localhost')
+REDIS_PORT = int(os.environ.get('REDIS_PORT', '6379'))
+REDIS_DB = int(os.environ.get('REDIS_DB', '0'))
+REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD', 'test-password')
 
 UNPROTECTED_PATHS = ['/favicon.ico', '/docs', '/recipe/openapi.json']
 UNLICENSED_PATHS = []
