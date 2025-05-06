@@ -69,3 +69,5 @@ class DBConnectionMiddleware(BaseHTTPMiddleware):
             return response
         except HTTPException as exc:
             return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+        except Exception as exc:
+            return JSONResponse(status_code=500, content={"detail": str(exc)})
