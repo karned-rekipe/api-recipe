@@ -158,7 +158,7 @@ class TestItemRepositoryMongo:
         repo.delete_item("test-uuid")
         
         # Verify delete_one was called with the correct query
-        collection_instance.delete_one.assert_called_once_with({"id": "test-uuid"})
+        collection_instance.delete_one.assert_called_once_with({"_id": "test-uuid"})
     
     def test_close(self, mock_mongo_client):
         _, client_instance, _, _ = mock_mongo_client
