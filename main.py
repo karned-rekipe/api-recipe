@@ -5,6 +5,7 @@ from fastapi.security import HTTPBearer
 from middlewares.token_middleware import TokenVerificationMiddleware
 from middlewares.database_middleware import DBConnectionMiddleware
 from middlewares.licence_middleware import LicenceVerificationMiddleware
+from middlewares.cors_middleware import CORSMiddleware
 from routers import v1
 import logging
 
@@ -48,5 +49,6 @@ app.openapi = custom_openapi
 app.add_middleware(DBConnectionMiddleware)
 app.add_middleware(LicenceVerificationMiddleware)
 app.add_middleware(TokenVerificationMiddleware)
+app.add_middleware(CORSMiddleware)
 
 app.include_router(v1.router)

@@ -7,6 +7,7 @@ import main
 from middlewares.token_middleware import TokenVerificationMiddleware
 from middlewares.database_middleware import DBConnectionMiddleware
 from middlewares.licence_middleware import LicenceVerificationMiddleware
+from middlewares.cors_middleware import CORSMiddleware
 
 
 @pytest.fixture
@@ -15,7 +16,8 @@ def mock_middlewares():
     with patch('main.TokenVerificationMiddleware') as mock_token:
         with patch('main.LicenceVerificationMiddleware') as mock_licence:
             with patch('main.DBConnectionMiddleware') as mock_db:
-                yield mock_token, mock_licence, mock_db
+                with patch('main.CORSMiddleware') as mock_cors:
+                    yield mock_token, mock_licence, mock_db, mock_cors
 
 
 @pytest.fixture
@@ -79,6 +81,7 @@ def test_middleware_registration():
     # Verify that the middleware registration code exists in main.py
     import inspect
     main_source = inspect.getsource(main)
+    assert "app.add_middleware(CORSMiddleware)" in main_source
     assert "app.add_middleware(DBConnectionMiddleware)" in main_source
     assert "app.add_middleware(LicenceVerificationMiddleware)" in main_source
     assert "app.add_middleware(TokenVerificationMiddleware)" in main_source
