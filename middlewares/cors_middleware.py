@@ -7,7 +7,6 @@ class CORSMiddleware(StarletteCorsMW):
         super().__init__(
             app=app,
             allow_origins=["*"],
-            allow_credentials=True,
             allow_methods=["*"],
             allow_headers=["*"],
             expose_headers=["Content-Type", "X-License-Key", "Authorization"],
