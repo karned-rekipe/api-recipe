@@ -63,7 +63,7 @@ class ItemRepositoryMongo(ItemRepository):
 
 
     def delete_item(self, uuid: str) -> None:
-        self.db[self.collection].delete_one({"id": uuid})
+        self.db[self.collection].delete_one({"_id": uuid})
 
     def close(self):
         self.client.close()

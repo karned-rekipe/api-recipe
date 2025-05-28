@@ -4,7 +4,7 @@ from schemas.step_schema import list_step_serial
 
 def item_serial(item) -> dict:
     return {
-        "id": str(item["_id"]),
+        "uuid": str(item["_id"]),
         "name": item["name"],
         "description": item.get("description"),
         "price": item.get("price"),

@@ -27,7 +27,7 @@ def test_item_serial():
     }
     expected_output = {
         "created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d",
-        "id": "12345",
+        "uuid": "12345",
         "name": "Recipe Name",
         "description": "This is a recipe description.",
         "price": 10.99,
@@ -57,7 +57,7 @@ def test_item_serial():
     }
     expected_output_minimal = {
         "created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d",
-        "id": "67890",
+        "uuid": "67890",
         "name": "Minimal Recipe",
         "description": None,
         "price": None,
@@ -109,7 +109,7 @@ def test_list_item_serial():
     expected_output = [
         {
             "created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d",
-            "id": "12345",
+            "uuid": "12345",
             "name": "Recipe Name",
             "description": "This is a recipe description.",
             "price": 10.99,
@@ -132,7 +132,7 @@ def test_list_item_serial():
         },
         {
             "created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d",
-            "id": "67890",
+            "uuid": "67890",
             "name": "Minimal Recipe",
             "description": None,
             "price": None,
