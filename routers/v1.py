@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Header, status, Request
 from config.config import API_TAG_NAME
 from decorators.check_permission import check_permissions
 from models.item_model import Item
+from schemas.read_item_schema import ReadItem
 from services.items_service import create_item, get_items, get_item, update_item, delete_item
 
 VERSION = "v1"
@@ -22,14 +23,14 @@ async def create_new_item(request: Request, item: Item) -> dict:
     return {"uuid": new_uuid}
 
 
-@router.get("/", status_code=status.HTTP_200_OK, response_model=list[Item])
+@router.get("/", status_code=status.HTTP_200_OK, response_model=list[ReadItem])
 @check_permissions(['read', 'read_own'])
 async def read_items(request: Request):
     repo = request.state.repo
     return get_items(repo)
 
 
-@router.get("/{uuid}", status_code=status.HTTP_200_OK, response_model=Item)
+@router.get("/{uuid}", status_code=status.HTTP_200_OK, response_model=ReadItem)
 @check_permissions(['list', 'list_own'])
 async def read_item(request: Request, uuid: str):
     repo = request.state.repo
@@ -51,4 +52,3 @@ async def update_existing_item(request: Request, uuid: str, item_update: Item):
 async def delete_existing_item(request: Request, uuid: str):
     repo = request.state.repo
     delete_item(uuid, repo)
-
