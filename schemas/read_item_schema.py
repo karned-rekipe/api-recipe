@@ -1,17 +1,9 @@
 from pydantic import BaseModel, HttpUrl
 from typing import Optional, List
 
-class ReadIngredient(BaseModel):
-    name: str
-    quantity: Optional[float] = None
-    unit: Optional[str] = None
-    created_by: Optional[str] = None
+from models.ingredient_model import Ingredient
+from models.step_model import Step
 
-class ReadStep(BaseModel):
-    step_number: int
-    description: str
-    duration: Optional[str] = None
-    created_by: Optional[str] = None
 
 class ReadItem(BaseModel):
     uuid: str
@@ -23,8 +15,8 @@ class ReadItem(BaseModel):
     origin_country: Optional[str] = None
     attributes: List[str] = []
     utensils: List[str] = []
-    ingredients: List[ReadIngredient] = []
-    steps: List[ReadStep] = []
+    ingredients: List[Ingredient] = []
+    steps: List[Step] = []
     thumbnail_url: Optional[HttpUrl] = None
     large_image_url: Optional[HttpUrl] = None
     source_reference: Optional[str] = None
