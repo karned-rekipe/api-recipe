@@ -28,7 +28,7 @@ def test_create_item_invalid_id():
 
 def test_get_items_success():
     repository = MagicMock()
-    mock_item = {"id": "1", "name": "Item 1"}
+    mock_item = {"uuid": "1", "name": "Item 1"}
     repository.list_items.return_value = [mock_item]
     assert get_items(repository) == [mock_item]
 
@@ -49,7 +49,7 @@ def test_get_items_invalid_response():
 
 def test_get_item_success():
     repository = MagicMock()
-    mock_item = {"id": "1", "name": "Item 1"}
+    mock_item = {"uuid": "1", "name": "Item 1"}
     repository.get_item.return_value = mock_item
     assert get_item("1", repository) == mock_item
 

@@ -1,8 +1,8 @@
-from schemas.item_schema import item_serial, list_item_serial
+from schemas.recipe_schema import recipe_serial, list_recipe_serial
 
 
-def test_item_serial():
-    item = {
+def test_recipe_serial():
+    recipe = {
         "created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d",
         "_id": "12345",
         "name": "Recipe Name",
@@ -27,7 +27,7 @@ def test_item_serial():
     }
     expected_output = {
         "created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d",
-        "id": "12345",
+        "uuid": "12345",
         "name": "Recipe Name",
         "description": "This is a recipe description.",
         "price": 10.99,
@@ -48,16 +48,16 @@ def test_item_serial():
         "large_image_url": "http://example.com/large_image.jpg",
         "source_reference": "Source Reference"
     }
-    assert item_serial(item) == expected_output
+    assert recipe_serial(recipe) == expected_output
 
-    item_minimal = {
+    recipe_minimal = {
         "created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d",
         "_id": "67890",
         "name": "Minimal Recipe"
     }
     expected_output_minimal = {
         "created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d",
-        "id": "67890",
+        "uuid": "67890",
         "name": "Minimal Recipe",
         "description": None,
         "price": None,
@@ -72,11 +72,11 @@ def test_item_serial():
         "large_image_url": None,
         "source_reference": None
     }
-    assert item_serial(item_minimal) == expected_output_minimal
+    assert recipe_serial(recipe_minimal) == expected_output_minimal
 
 
-def test_list_item_serial():
-    items = [
+def test_list_recipe_serial():
+    recipes = [
         {
             "created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d",
             "_id": "12345",
@@ -109,7 +109,7 @@ def test_list_item_serial():
     expected_output = [
         {
             "created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d",
-            "id": "12345",
+            "uuid": "12345",
             "name": "Recipe Name",
             "description": "This is a recipe description.",
             "price": 10.99,
@@ -132,7 +132,7 @@ def test_list_item_serial():
         },
         {
             "created_by": "d3f48a42-0d1e-4270-8e8e-549251cd823d",
-            "id": "67890",
+            "uuid": "67890",
             "name": "Minimal Recipe",
             "description": None,
             "price": None,
@@ -148,8 +148,8 @@ def test_list_item_serial():
             "source_reference": None
         }
     ]
-    assert list_item_serial(items) == expected_output
+    assert list_recipe_serial(recipes) == expected_output
 
-    empty_items = []
+    empty_recipes = []
     expected_output_empty = []
-    assert list_item_serial(empty_items) == expected_output_empty
+    assert list_recipe_serial(empty_recipes) == expected_output_empty

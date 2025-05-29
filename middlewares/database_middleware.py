@@ -8,7 +8,7 @@ from starlette.responses import JSONResponse
 from config.config import URL_API_GATEWAY
 from decorators.log_time import log_time_async
 from middlewares.token_middleware import extract_token
-from repositories.item_repository import ItemRepositoryMongo
+from repositories.recipe_repository import RecipeRepositoryMongo
 from services.inmemory_service import get_redis_api_db
 from utils.path_util import is_unprotected_path
 
@@ -61,7 +61,7 @@ class DBConnectionMiddleware(BaseHTTPMiddleware):
                 credential = get_credential(token=token, licence=request.state.licence_uuid)
                 logging.info(f"credential: {credential}")
 
-                repo = ItemRepositoryMongo(uri=credential.get('uri'))
+                repo = RecipeRepositoryMongo(uri=credential.get('uri'))
                 check_repo(repo)
                 request.state.repo = repo
 
