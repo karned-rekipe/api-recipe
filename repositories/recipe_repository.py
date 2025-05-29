@@ -50,6 +50,8 @@ class RecipeRepositoryMongo(RecipeRepository):
 
     def get_recipe(self, uuid: str) -> dict:
         result = self.db[self.collection].find_one({"_id": uuid})
+        if result is None:
+            return None
         recipe = recipe_serial(result)
         return recipe
 
