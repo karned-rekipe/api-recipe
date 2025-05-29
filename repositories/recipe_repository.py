@@ -5,9 +5,9 @@ from uuid import uuid4
 
 from pymongo import MongoClient
 
-from interfaces.item_interface import ItemRepository
+from interfaces.recipe_interface import RecipeRepository
 from models.recipe_model import RecipeWrite
-from schemas.item_schema import list_item_serial, item_serial
+from schemas.recipe_schema import list_recipe_serial, recipe_serial
 
 def check_uri(uri):
     if not re.match(r"^mongodb://", uri):
@@ -24,7 +24,7 @@ def extract_database(uri: str) -> str:
     return db_name
 
 
-class ItemRepositoryMongo(ItemRepository):
+class RecipeRepositoryMongo(RecipeRepository):
 
     def __init__(self, uri):
         check_uri(uri)
@@ -38,31 +38,32 @@ class ItemRepositoryMongo(ItemRepository):
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.client.close()
 
-    #Todo
-    # gerer l'erreur si insert_one ne fonctionne pas
-    # du coup inserted_id n'existe pa
-    def create_item(self, item_create: RecipeWrite) -> str:
-        item_data = item_create.model_dump()
-        item_data["_id"] = str(uuid4())
-        new_uuid = self.db[self.collection].insert_one(item_data)
-        return new_uuid.inserted_id
+    def create_recipe(self, recipe_create: RecipeWrite) -> str:
+        recipe_data = recipe_create.model_dump()
+        recipe_id = str(uuid4())
+        recipe_data["_id"] = recipe_id
+        try:
+            new_uuid = self.db[self.collection].insert_one(recipe_data)
+            return new_uuid.inserted_id
+        except Exception as e:
+            raise ValueError(f"Failed to create recipe in database: {str(e)}")
 
-    def get_item(self, uuid: str) -> dict:
+    def get_recipe(self, uuid: str) -> dict:
         result = self.db[self.collection].find_one({"_id": uuid})
-        item = item_serial(result)
-        return item
+        recipe = recipe_serial(result)
+        return recipe
 
-    def list_items(self) -> List[dict]:
+    def list_recipes(self) -> List[dict]:
         result = self.db[self.collection].find()
-        items = list_item_serial(result)
-        return items
+        recipes = list_recipe_serial(result)
+        return recipes
 
-    def update_item(self, uuid: str, item_update: RecipeWrite) -> None:
-        update_data = {"$set": item_update.model_dump()}
+    def update_recipe(self, uuid: str, recipe_update: RecipeWrite) -> None:
+        update_data = {"$set": recipe_update.model_dump()}
         self.db[self.collection].find_one_and_update({"_id": uuid}, update_data)
 
 
-    def delete_item(self, uuid: str) -> None:
+    def delete_recipe(self, uuid: str) -> None:
         self.db[self.collection].delete_one({"_id": uuid})
 
     def close(self):

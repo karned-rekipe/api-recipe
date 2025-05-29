@@ -2,26 +2,26 @@ from abc import ABC, abstractmethod
 from typing import List
 from models.recipe_model import RecipeWrite
 
-class ItemRepository(ABC):
+class RecipeRepository(ABC):
 
     @abstractmethod
-    def create_item(self, item_create: RecipeWrite):
+    def create_recipe(self, recipe_create: RecipeWrite):
         pass
 
     @abstractmethod
-    def get_item(self, item_id: str):
+    def get_recipe(self, recipe_id: str):
         pass
 
     @abstractmethod
-    def list_items(self):
+    def list_recipes(self):
         pass
 
     @abstractmethod
-    def update_item(self, item_id: str, item_update: RecipeWrite):
+    def update_recipe(self, recipe_id: str, recipe_update: RecipeWrite):
         pass
 
     @abstractmethod
-    def delete_item(self, item_id: str):
+    def delete_recipe(self, recipe_id: str):
         pass
 
     @abstractmethod
