@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from models.item_model import Item
+from models.recipe_model import RecipeWrite
 
 def create_item(new_item, repository) -> str:
     try:
@@ -11,7 +11,7 @@ def create_item(new_item, repository) -> str:
 
     return new_uuid
 
-def get_items(repository) -> list[Item]:
+def get_items(repository) -> list[RecipeWrite]:
     try:
         items = repository.list_items()
         if not isinstance(items, list):
@@ -22,7 +22,7 @@ def get_items(repository) -> list[Item]:
     return items
 
 
-def get_item(uuid: str, repository) -> Item:
+def get_item(uuid: str, repository) -> RecipeWrite:
     try:
         item = repository.get_item(uuid)
     except Exception as e:
@@ -33,7 +33,7 @@ def get_item(uuid: str, repository) -> Item:
 
     return item
 
-def update_item(uuid: str, item_update: Item, repository) -> None:
+def update_item(uuid: str, item_update: RecipeWrite, repository) -> None:
     try:
         repository.update_item(uuid, item_update)
     except Exception as e:

@@ -6,7 +6,7 @@ from uuid import uuid4
 from pymongo import MongoClient
 
 from interfaces.item_interface import ItemRepository
-from models.item_model import Item
+from models.recipe_model import RecipeWrite
 from schemas.item_schema import list_item_serial, item_serial
 
 def check_uri(uri):
@@ -41,7 +41,7 @@ class ItemRepositoryMongo(ItemRepository):
     #Todo
     # gerer l'erreur si insert_one ne fonctionne pas
     # du coup inserted_id n'existe pa
-    def create_item(self, item_create: Item) -> str:
+    def create_item(self, item_create: RecipeWrite) -> str:
         item_data = item_create.model_dump()
         item_data["_id"] = str(uuid4())
         new_uuid = self.db[self.collection].insert_one(item_data)
@@ -57,7 +57,7 @@ class ItemRepositoryMongo(ItemRepository):
         items = list_item_serial(result)
         return items
 
-    def update_item(self, uuid: str, item_update: Item) -> None:
+    def update_item(self, uuid: str, item_update: RecipeWrite) -> None:
         update_data = {"$set": item_update.model_dump()}
         self.db[self.collection].find_one_and_update({"_id": uuid}, update_data)
 

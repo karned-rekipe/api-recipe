@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
 from typing import List
-from models.item_model import Item
+from models.recipe_model import RecipeWrite
 
 class ItemRepository(ABC):
 
     @abstractmethod
-    def create_item(self, item_create: Item):
+    def create_item(self, item_create: RecipeWrite):
         pass
 
     @abstractmethod
@@ -17,7 +17,7 @@ class ItemRepository(ABC):
         pass
 
     @abstractmethod
-    def update_item(self, item_id: str, item_update: Item):
+    def update_item(self, item_id: str, item_update: RecipeWrite):
         pass
 
     @abstractmethod

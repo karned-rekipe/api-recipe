@@ -26,7 +26,7 @@ def test_item_creation():
         "large_image_url": "http://example.com/large_image.jpg",
         "source_reference": "Source Reference"
     }
-    item = Item(**item_data)
+    item = RecipeWrite(**item_data)
     assert item.name == "Recipe Name"
     assert item.description == "This is a recipe description."
     assert item.price == 10.99
@@ -46,7 +46,7 @@ def test_item_creation_with_defaults():
     item_data = {
         "name": "Minimal Recipe"
     }
-    item = Item(**item_data)
+    item = RecipeWrite(**item_data)
     assert item.name == "Minimal Recipe"
     assert item.description is None
     assert item.price is None
@@ -68,7 +68,7 @@ def test_item_validation_error():
         "number_of_persons": 0
     }
     with pytest.raises(ValidationError):
-        Item(**invalid_item_data)
+        RecipeWrite(**invalid_item_data)
 
 
 def test_item_missing_fields():
@@ -76,7 +76,7 @@ def test_item_missing_fields():
         "description": "Incomplete Recipe"
     }
     with pytest.raises(ValidationError):
-        Item(**incomplete_item_data)
+        RecipeWrite(**incomplete_item_data)
 
 def test_item_invalid_description_type():
     invalid_item_data = {
@@ -84,7 +84,7 @@ def test_item_invalid_description_type():
         "description": 123
     }
     with pytest.raises(ValidationError):
-        Item(**invalid_item_data)
+        RecipeWrite(**invalid_item_data)
 
 def test_item_invalid_price_type():
     invalid_item_data = {
@@ -92,7 +92,7 @@ def test_item_invalid_price_type():
         "price": "ten"
     }
     with pytest.raises(ValidationError):
-        Item(**invalid_item_data)
+        RecipeWrite(**invalid_item_data)
 
 def test_item_invalid_quantity_type():
     invalid_item_data = {
@@ -100,7 +100,7 @@ def test_item_invalid_quantity_type():
         "quantity": "two"
     }
     with pytest.raises(ValidationError):
-        Item(**invalid_item_data)
+        RecipeWrite(**invalid_item_data)
 
 def test_item_invalid_number_of_persons_type():
     invalid_item_data = {
@@ -108,7 +108,7 @@ def test_item_invalid_number_of_persons_type():
         "number_of_persons": "four"
     }
     with pytest.raises(ValidationError):
-        Item(**invalid_item_data)
+        RecipeWrite(**invalid_item_data)
 
 def test_item_invalid_origin_country_type():
     invalid_item_data = {
@@ -116,7 +116,7 @@ def test_item_invalid_origin_country_type():
         "origin_country": 42
     }
     with pytest.raises(ValidationError):
-        Item(**invalid_item_data)
+        RecipeWrite(**invalid_item_data)
 
 def test_item_invalid_attributes_type():
     invalid_item_data = {
@@ -124,7 +124,7 @@ def test_item_invalid_attributes_type():
         "attributes": "vegan"
     }
     with pytest.raises(ValidationError):
-        Item(**invalid_item_data)
+        RecipeWrite(**invalid_item_data)
 
 def test_item_invalid_utensils_type():
     invalid_item_data = {
@@ -132,7 +132,7 @@ def test_item_invalid_utensils_type():
         "utensils": "pan"
     }
     with pytest.raises(ValidationError):
-        Item(**invalid_item_data)
+        RecipeWrite(**invalid_item_data)
 
 def test_item_invalid_ingredients_type():
     invalid_item_data = {
@@ -140,7 +140,7 @@ def test_item_invalid_ingredients_type():
         "ingredients": "Sugar"
     }
     with pytest.raises(ValidationError):
-        Item(**invalid_item_data)
+        RecipeWrite(**invalid_item_data)
 
 def test_item_invalid_steps_type():
     invalid_item_data = {
@@ -148,7 +148,7 @@ def test_item_invalid_steps_type():
         "steps": "First step"
     }
     with pytest.raises(ValidationError):
-        Item(**invalid_item_data)
+        RecipeWrite(**invalid_item_data)
 
 def test_item_invalid_thumbnail_url_type():
     invalid_item_data = {
@@ -156,7 +156,7 @@ def test_item_invalid_thumbnail_url_type():
         "thumbnail_url": 123
     }
     with pytest.raises(ValidationError):
-        Item(**invalid_item_data)
+        RecipeWrite(**invalid_item_data)
 
 def test_item_invalid_large_image_url_type():
     invalid_item_data = {
@@ -164,7 +164,7 @@ def test_item_invalid_large_image_url_type():
         "large_image_url": 123
     }
     with pytest.raises(ValidationError):
-        Item(**invalid_item_data)
+        RecipeWrite(**invalid_item_data)
 
 def test_item_invalid_source_reference_type():
     invalid_item_data = {
@@ -172,7 +172,7 @@ def test_item_invalid_source_reference_type():
         "source_reference": 123
     }
     with pytest.raises(ValidationError):
-        Item(**invalid_item_data)
+        RecipeWrite(**invalid_item_data)
 
 def test_item_invalid_url():
     invalid_item_data = {
@@ -181,7 +181,7 @@ def test_item_invalid_url():
         "large_image_url": "invalid_url"
     }
     with pytest.raises(ValidationError):
-        Item(**invalid_item_data)
+        RecipeWrite(**invalid_item_data)
 
 def test_item_invalid_list_types():
     invalid_item_data = {
@@ -190,4 +190,4 @@ def test_item_invalid_list_types():
         "utensils": ["pan", 42]
     }
     with pytest.raises(ValidationError):
-        Item(**invalid_item_data)
+        RecipeWrite(**invalid_item_data)
