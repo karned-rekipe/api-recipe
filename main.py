@@ -1,7 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.openapi.utils import get_openapi
 from fastapi.security import HTTPBearer
 
+from middlewares.exception_handler import http_exception_handler
 from middlewares.token_middleware import TokenVerificationMiddleware
 from middlewares.database_middleware import DBConnectionMiddleware
 from middlewares.licence_middleware import LicenceVerificationMiddleware
@@ -47,6 +48,7 @@ def custom_openapi():
 app.openapi = custom_openapi
 
 app.add_middleware(DBConnectionMiddleware)
+app.add_middleware(HTTPException, http_exception_handler)
 app.add_middleware(LicenceVerificationMiddleware)
 app.add_middleware(TokenVerificationMiddleware)
 app.add_middleware(CORSMiddleware)
