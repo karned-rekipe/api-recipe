@@ -7,7 +7,7 @@ from fastapi import HTTPException
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
-from config.config import API_NAME, KEYCLOAK_HOST, KEYCLOAK_REALM, KEYCLOAK_CLIENT_ID, KEYCLOAK_CLIENT_SECRET
+from config.config import KEYCLOAK_HOST, KEYCLOAK_REALM, KEYCLOAK_CLIENT_ID, KEYCLOAK_CLIENT_SECRET
 from decorators.log_time import log_time_async
 from services.inmemory_service import get_redis_api_db
 from utils.path_util import is_unprotected_path
@@ -21,14 +21,17 @@ def generate_state_info( token_info: dict ) -> dict:
         "user_display_name": token_info.get("preferred_username"),
         "user_email": token_info.get("email"),
         "user_audiences": token_info.get("aud"),
-        "user_roles": token_info.get("resource_access"),
         "cached_time": token_info.get("cached_time")
     }
 
 
 def is_token_valid_audience( token_info: dict ) -> bool:
     aud = token_info.get("aud")
-    return API_NAME in aud
+    if isinstance(aud, str):
+        return "karned" == aud
+    if isinstance(aud, list):
+        return "karned" in aud
+    return False
 
 
 def is_token_active( token_info: dict ) -> bool:
@@ -50,7 +53,7 @@ def read_cache_token( token: str ) -> Any | None:
     return None
 
 
-def write_cache_token( token: str, cache_token: dict ):
+def write_cache_token( token: str, cache_token: dict ) -> None:
     logging.info(f"Token : write_cache_token")
     if cache_token.get("exp") is not None:
         ttl = cache_token.get("exp") - int(time.time())
@@ -87,7 +90,7 @@ def get_token_info( token: str ) -> dict:
     return response
 
 
-def delete_cache_token( token: str ):
+def delete_cache_token( token: str ) -> None:
     logging.info(f"Token : delete_cache_token")
     r.delete(token)
 
@@ -107,7 +110,7 @@ def extract_token( request: Request ) -> str:
     return token
 
 
-def refresh_cache_token( request: Request ):
+def refresh_cache_token( request: Request ) -> None:
     logging.info(f"Token : refresh_cache_token")
     check_headers_token(request)
     token = extract_token(request)
@@ -118,18 +121,18 @@ def refresh_cache_token( request: Request ):
     store_token_info_in_state(state_token_info, request)
 
 
-def store_token_info_in_state( state_token_info: dict, request: Request ):
+def store_token_info_in_state( state_token_info: dict, request: Request ) -> None:
     setattr(request.state, 'token_info', state_token_info)
     setattr(request.state, 'user_uuid', state_token_info.get("user_uuid"))
     setattr(request.state, 'token', extract_token(request))
 
 
-def check_headers_token( request: Request ):
+def check_headers_token( request: Request ) -> None:
     if not is_headers_token_present(request):
         raise HTTPException(status_code=401, detail="Token manquant ou invalide")
 
 
-def check_token( token_info ):
+def check_token( token_info ) -> None:
     if not is_token_active(token_info):
         raise HTTPException(status_code=401, detail="Token is not active")
 
@@ -157,3 +160,4 @@ class TokenVerificationMiddleware(BaseHTTPMiddleware):
             return response
         except HTTPException as exc:
             return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+
