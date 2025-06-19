@@ -31,7 +31,7 @@ def get_recipe(request, uuid: str) -> RecipeWrite:
         repos = get_state_repos(request)
         recipe = repos.recipe_repo.get_recipe(uuid)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"An error occurred while get recipe: {e}")
+        raise HTTPException(status_code=500, detail=f"An error occurred while retrieving the recipe: {e}")
 
     if recipe is None:
         raise HTTPException(status_code=404, detail="Recipe not found")
