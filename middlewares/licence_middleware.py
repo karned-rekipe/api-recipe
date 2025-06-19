@@ -1,4 +1,3 @@
-import logging
 from datetime import datetime, timezone
 
 import httpx
@@ -9,11 +8,13 @@ from starlette.responses import JSONResponse, Response
 from decorators.log_time import log_time_async
 from middlewares.token_middleware import read_cache_token, write_cache_token
 from services.inmemory_service import get_redis_api_db
+from services import Logger
 from utils.path_util import is_unprotected_path, is_unlicensed_path
 from config.config import URL_API_GATEWAY
 
 
 r = get_redis_api_db()
+logger = Logger()
 
 
 def extract_licence(request: Request) -> str:
@@ -33,7 +34,7 @@ def check_headers_licence(request: Request) -> None:
 
 
 def is_licence_found(request: Request, licence: str) -> bool:
-    logging.info(f"License : is_licence_found")
+    logger.debug(f"License : is_licence_found")
     licenses = getattr(request.state, 'licenses', None)
     if not licenses:
         return False
@@ -43,7 +44,7 @@ def is_licence_found(request: Request, licence: str) -> bool:
 
 
 def get_licences(token: str) -> list:
-    logging.info(f"License : get_licences")
+    logger.debug(f"License : get_licences")
     response = httpx.get(f"{URL_API_GATEWAY}/license/v1/mine", headers={"Authorization": f"Bearer {token}"})
     if response.status_code != 200:
         raise HTTPException(status_code=500, detail="Licences request failed")
@@ -76,14 +77,14 @@ def prepare_licences(token: str) -> list:
 
 
 def refresh_cache_token(request: Request) -> dict:
-    logging.info(f"License : refresh_cache_token")
+    logger.debug(f"License : refresh_cache_token")
     cache_token = read_cache_token(getattr(request.state, 'token', None))
     cache_token['licenses'] = getattr(request.state, 'licenses', None)
     return cache_token
 
 
 def refresh_licences(request: Request) -> None:
-    logging.info(f"License : refresh_licences")
+    logger.debug(f"License : refresh_licences")
     token = getattr(request.state, 'token', None)
     licenses = prepare_licences(token)
     setattr(request.state, 'licenses', licenses)
@@ -108,20 +109,20 @@ def extract_entity(request: Request) -> str:
 
 class LicenceVerificationMiddleware(BaseHTTPMiddleware):
     def __init__(self, app):
+        logger.init("Initializing LicenceVerificationMiddleware")
         super().__init__(app)
 
     @log_time_async
     async def dispatch(self, request: Request, call_next) -> Response:
-        logging.info("LicenceVerificationMiddleware")
         try:
             if not is_unprotected_path(request.url.path) and not is_unlicensed_path(request.url.path):
                 check_headers_licence(request)
                 licence_uuid = extract_licence(request)
-                logging.info(f"licence_uuid: {licence_uuid}")
+                logger.debug(f"licence_uuid: {licence_uuid}")
                 check_licence(request, licence_uuid)
                 setattr(request.state, 'licence_uuid', licence_uuid)
                 entity_uuid = extract_entity(request)
-                logging.info(f"entity_uuid: {entity_uuid}")
+                logger.debug(f"entity_uuid: {entity_uuid}")
                 setattr(request.state, 'entity_uuid', entity_uuid)
             response = await call_next(request)
             return response

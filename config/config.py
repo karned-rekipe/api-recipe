@@ -4,6 +4,8 @@ import os
 API_NAME = os.environ.get('API_NAME', 'api-recipe')
 API_TAG_NAME = os.environ.get('API_TAG_NAME', 'recipes')
 
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+
 URL_API_GATEWAY = os.environ.get('URL_API_GATEWAY', 'http://localhost:8000')
 
 # Keycloak Configuration

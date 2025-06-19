@@ -2,16 +2,17 @@ from fastapi import FastAPI, HTTPException
 from fastapi.openapi.utils import get_openapi
 from fastapi.security import HTTPBearer
 
-from middlewares.exception_handler import http_exception_handler
-from middlewares.token_middleware import TokenVerificationMiddleware
-from middlewares.database_middleware import DBConnectionMiddleware
-from middlewares.licence_middleware import LicenceVerificationMiddleware
-from middlewares.cors_middleware import CORSMiddleware
+from config.config import API_NAME
+from middlewares import http_exception_handler
+from middlewares import TokenVerificationMiddleware
+from middlewares import DBConnectionMiddleware
+from middlewares import LicenceVerificationMiddleware
+from middlewares import CORSMiddleware
+from services import Logger
 from routers import v1
-import logging
 
-logging.basicConfig(level=logging.INFO)
-logging.info("Starting API")
+logger = Logger()
+logger.start(f"Starting {API_NAME} Service")
 
 bearer_scheme = HTTPBearer()
 
@@ -48,9 +49,9 @@ def custom_openapi():
 app.openapi = custom_openapi
 
 app.add_middleware(DBConnectionMiddleware)
-app.add_middleware(HTTPException, http_exception_handler)
 app.add_middleware(LicenceVerificationMiddleware)
 app.add_middleware(TokenVerificationMiddleware)
 app.add_middleware(CORSMiddleware)
+app.add_exception_handler(HTTPException, http_exception_handler)
 
 app.include_router(v1.router)
