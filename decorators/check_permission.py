@@ -1,4 +1,3 @@
-import logging
 from fastapi import Request
 from functools import wraps
 from typing import List

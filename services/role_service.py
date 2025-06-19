@@ -1,9 +1,14 @@
 import logging
 from typing import Dict, Optional
 
+def get_license_in_state(request) -> str:
+    license_uuid = getattr(request.state, 'licence_uuid', None)
+    return license_uuid
+
+
 def get_api_roles(request) -> dict:
     licenses = getattr(request.state, 'licenses', None)
-    licence_uuid = getattr(request.state, 'licence_uuid', None)
+    licence_uuid = get_license_in_state(request)
 
     if not licenses or not licence_uuid:
         return {}
@@ -19,7 +24,7 @@ def get_api_roles(request) -> dict:
 
 def get_app_roles(request) -> dict:
     licenses = getattr(request.state, 'licenses', None)
-    licence_uuid = getattr(request.state, 'licence_uuid', None)
+    licence_uuid = get_license_in_state(request)
 
     logging.info(f"Token : get_app_roles")
     if not licenses or not licence_uuid:
@@ -36,7 +41,7 @@ def get_app_roles(request) -> dict:
 
 def get_license_by_uuid(request) -> Optional[Dict]:
     licenses = getattr(request.state, 'licenses', None)
-    licence_uuid = getattr(request.state, 'licence_uuid', None)
+    licence_uuid = get_license_in_state(request)
 
     if not licenses or not licence_uuid:
         return None
