@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 from models.recipe_model import RecipeWrite
-from utils.state_util import get_state_repos
+from shared.utils.v0 import get_state_repos
 
 
 def create_recipe(request, new_recipe) -> str:

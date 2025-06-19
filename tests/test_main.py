@@ -1,13 +1,9 @@
 import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 import main
-from middlewares.token_middleware import TokenVerificationMiddleware
-from middlewares.database_middleware import DBConnectionMiddleware
-from middlewares.licence_middleware import LicenceVerificationMiddleware
-from middlewares.cors_middleware import CORSMiddleware
 
 
 @pytest.fixture
