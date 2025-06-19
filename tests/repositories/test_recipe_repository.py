@@ -3,7 +3,7 @@ from unittest.mock import patch, MagicMock
 import re
 from uuid import UUID
 
-from repositories.recipe_repository import check_uri, extract_database, RecipeRepositoryMongo
+from repositories.recipe_repository_mongo import check_uri, extract_database, RecipeRepositoryMongo
 from models.recipe_model import RecipeWrite
 
 
