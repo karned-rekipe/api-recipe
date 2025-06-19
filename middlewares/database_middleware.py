@@ -59,7 +59,6 @@ class DBConnectionMiddleware(BaseHTTPMiddleware):
             if not is_unprotected_path(request.url.path):
                 token = extract_token(request)
                 credential = get_credential(token=token, licence=request.state.licence_uuid)
-                logging.info(f"credential: {credential}")
 
                 repo = RecipeRepositoryMongo(uri=credential.get('uri'))
                 check_repo(repo)
