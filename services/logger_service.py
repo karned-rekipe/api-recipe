@@ -51,6 +51,8 @@ class Logger:
 
         self.logger = logging.getLogger(app_name)
         self.logger.setLevel(log_level)
+        # Disable propagation to root logger to prevent duplicate logs
+        self.logger.propagate = False
 
         if not self.logger.handlers:
             handler = logging.StreamHandler(sys.stdout)

@@ -16,7 +16,7 @@ r = get_redis_api_db()
 logger = Logger()
 
 def generate_state_info( token_info: dict ) -> dict:
-    logger.info(f"Token : generate_state_info")
+    logger.debug(f"Token : generate_state_info")
     return {
         "user_uuid": token_info.get("sub"),
         "user_display_name": token_info.get("preferred_username"),
@@ -47,7 +47,7 @@ def is_token_active( token_info: dict ) -> bool:
 
 
 def read_cache_token( token: str ) -> Any | None:
-    logger.info(f"Token : read_cache_token")
+    logger.debug(f"Token : read_cache_token")
     cached_result = r.get(token)
     if cached_result is not None:
         return eval(cached_result)
@@ -55,14 +55,14 @@ def read_cache_token( token: str ) -> Any | None:
 
 
 def write_cache_token( token: str, cache_token: dict ) -> None:
-    logger.info(f"Token : write_cache_token")
+    logger.debug(f"Token : write_cache_token")
     if cache_token.get("exp") is not None:
         ttl = cache_token.get("exp") - int(time.time())
         r.set(token, str(cache_token), ex=ttl)
 
 
 def introspect_token( token: str ) -> dict:
-    logger.info(f"Token : introspect_token")
+    logger.debug(f"Token : introspect_token")
     url = f"{KEYCLOAK_HOST}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token/introspect"
     data = {
         "token": token,
@@ -92,7 +92,7 @@ def get_token_info( token: str ) -> dict:
 
 
 def delete_cache_token( token: str ) -> None:
-    logger.info(f"Token : delete_cache_token")
+    logger.debug(f"Token : delete_cache_token")
     r.delete(token)
 
 
@@ -112,7 +112,7 @@ def extract_token( request: Request ) -> str:
 
 
 def refresh_cache_token( request: Request ) -> None:
-    logger.info(f"Token : refresh_cache_token")
+    logger.debug(f"Token : refresh_cache_token")
     check_headers_token(request)
     token = extract_token(request)
     delete_cache_token(token)
