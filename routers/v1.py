@@ -20,9 +20,9 @@ router = APIRouter(
 @check_permissions(['create'])
 async def create_new_recipe(request: Request, recipe: RecipeWrite) -> dict:
     logger.api("POST /recipe/v1/")
-    repo = request.state.repo
+    repos = request.state.repos
     recipe.created_by = request.state.token_info.get('user_id')
-    new_uuid = create_recipe(recipe, repo)
+    new_uuid = create_recipe(recipe, repos)
     return {"uuid": new_uuid}
 
 
@@ -30,16 +30,16 @@ async def create_new_recipe(request: Request, recipe: RecipeWrite) -> dict:
 @check_permissions(['read', 'read_own'])
 async def read_recipes(request: Request):
     logger.api("GET /recipe/v1/")
-    repo = request.state.repo
-    return get_recipes(repo)
+    repos = request.state.repos
+    return get_recipes(repos)
 
 
 @router.get("/{uuid}", status_code=status.HTTP_200_OK, response_model=RecipeRead)
 @check_permissions(['list', 'list_own'])
 async def read_recipe(request: Request, uuid: str):
     logger.api("GET /recipe/v1/{uuid}")
-    repo = request.state.repo
-    recipe = get_recipe(uuid, repo)
+    repos = request.state.repos
+    recipe = get_recipe(uuid, repos)
     if recipe is None:
         raise HTTPException(status_code=404, detail="Recipe not found")
     return recipe
@@ -49,13 +49,13 @@ async def read_recipe(request: Request, uuid: str):
 @check_permissions(['update', 'update_own'])
 async def update_existing_recipe(request: Request, uuid: str, recipe_update: RecipeWrite):
     logger.api("PUT /recipe/v1/{uuid}")
-    repo = request.state.repo
-    update_recipe(uuid, recipe_update, repo)
+    repos = request.state.repos
+    update_recipe(uuid, recipe_update, repos)
 
 
 @router.delete("/{uuid}", status_code=status.HTTP_204_NO_CONTENT)
 @check_permissions(['delete', 'delete_own'])
 async def delete_existing_recipe(request: Request, uuid: str):
     logger.api("DELETE /recipe/v1/{uuid}")
-    repo = request.state.repo
-    delete_recipe(uuid, repo)
+    repos = request.state.repos
+    delete_recipe(uuid, repos)
