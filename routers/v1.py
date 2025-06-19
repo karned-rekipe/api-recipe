@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status, Request
 from config.config import API_TAG_NAME
-from decorators.check_permission import check_permissions
+from shared.decorators.v0.check_permission import check_permissions
 from models.recipe_model import RecipeWrite, RecipeRead
 from services import Logger
 from services.recipes_service import create_recipe, get_recipes, get_recipe, update_recipe, delete_recipe

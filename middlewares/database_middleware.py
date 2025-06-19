@@ -6,11 +6,11 @@ from services.logger_service import Logger
 from starlette.responses import JSONResponse
 
 from config.config import URL_API_GATEWAY
-from decorators.log_time import log_time_async
-from middlewares.token_middleware import extract_token
-from repositories import get_repositories
-from services.inmemory_service import get_redis_api_db
-from utils.path_util import is_unprotected_path
+from shared.decorators.v0.log_time import log_time_async
+from shared.middlewares.v0.token_middleware import extract_token
+from repositories.recipe_repository import RecipeRepositoryMongo
+from shared.services.v0.inmemory_service import get_redis_api_db
+from shared.utils.v0.path_util import is_unprotected_path
 
 r = get_redis_api_db()
 logger = Logger()
