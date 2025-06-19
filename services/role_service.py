@@ -1,5 +1,7 @@
-import logging
 from typing import Dict, Optional
+from services.logger_service import Logger
+
+logger = Logger()
 
 def get_license_in_state(request) -> str:
     license_uuid = getattr(request.state, 'licence_uuid', None)
@@ -26,7 +28,7 @@ def get_app_roles(request) -> dict:
     licenses = getattr(request.state, 'licenses', None)
     licence_uuid = get_license_in_state(request)
 
-    logging.info(f"Token : get_app_roles")
+    logger.info('Token : get_app_roles')
     if not licenses or not licence_uuid:
         return {}
 

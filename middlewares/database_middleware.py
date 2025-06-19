@@ -1,7 +1,7 @@
 import httpx
 from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi import HTTPException, Request
-import logging
+from services.logger_service import Logger
 
 from starlette.responses import JSONResponse
 
@@ -13,13 +13,14 @@ from shared.services.v0.inmemory_service import get_redis_api_db
 from shared.utils.v0.path_util import is_unprotected_path
 
 r = get_redis_api_db()
+logger = Logger()
 
 
 def read_cache_credential(licence: str) -> dict | None:
     cache_key = f"{licence}_database"
     cached_result = r.get(cache_key)
     if cached_result is not None:
-        logging.info(f"Using cached database credential for licence {licence}")
+        logger.info(f"Using cached database credential for licence {licence}")
         return eval(cached_result)
     return None
 
@@ -27,7 +28,7 @@ def read_cache_credential(licence: str) -> dict | None:
 def write_cache_credential(licence: str, credential: dict):
     cache_key = f"{licence}_database"
     r.set(cache_key, str(credential), ex=1800)
-    logging.info(f"Cached database credential for licence {licence}")
+    logger.info(f"Cached database credential for licence {licence}")
 
 
 def get_credential(token: str, licence: str) -> dict:
@@ -45,29 +46,28 @@ def get_credential(token: str, licence: str) -> dict:
 
     return credential
 
-def check_repo( repo ):
-    if repo is None:
+def check_repo( repos ):
+    if repos is None:
         raise Exception("DBConnectionMiddleware: Error: No repository found")
 
 
 class DBConnectionMiddleware(BaseHTTPMiddleware):
+    def __init__(self, app):
+        logger.init("Initializing DBConnectionMiddleware")
+        super().__init__(app)
+
     @log_time_async
     async def dispatch( self, request: Request, call_next ):
-        logging.info("DBConnectionMiddleware")
-
         try:
             if not is_unprotected_path(request.url.path):
                 token = extract_token(request)
                 credential = get_credential(token=token, licence=request.state.licence_uuid)
 
-                repo = RecipeRepositoryMongo(uri=credential.get('uri'))
-                check_repo(repo)
-                request.state.repo = repo
+                repos = get_repositories(uri=credential.get('uri'))
+                check_repo(repos)
+                request.state.repos = repos
 
             response = await call_next(request)
             return response
         except HTTPException as exc:
             return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
-        except Exception as exc:
-            logging.error("An unexpected error occurred", exc_info=True)
-            return JSONResponse(status_code=500, content={"detail": "An internal server error occurred."})

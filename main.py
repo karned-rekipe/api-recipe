@@ -11,10 +11,9 @@ from middlewares.database_middleware import DBConnectionMiddleware
 from shared.middlewares.v0.licence_middleware import LicenceVerificationMiddleware
 from shared.middlewares.v0.cors_middleware import CORSMiddleware
 from routers import v1
-import logging
 
-logging.basicConfig(level=logging.INFO)
-logging.info("Starting API")
+logger = Logger()
+logger.start(f"Starting {API_NAME} Service")
 
 logging.info("Loading Config for shared")
 init_config(
@@ -71,6 +70,7 @@ app.add_middleware(DBConnectionMiddleware)
 app.add_middleware(LicenceVerificationMiddleware)
 app.add_middleware(TokenVerificationMiddleware)
 app.add_middleware(CORSMiddleware)
+app.add_exception_handler(HTTPException, http_exception_handler)
 
 app.add_exception_handler(HTTPException, http_exception_handler)
 

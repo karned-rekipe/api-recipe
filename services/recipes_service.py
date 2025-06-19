@@ -1,9 +1,12 @@
 from fastapi import HTTPException
 from models.recipe_model import RecipeWrite
+from utils.state_util import get_state_repos
 
-def create_recipe(new_recipe, repository) -> str:
+
+def create_recipe(request, new_recipe) -> str:
     try:
-        new_uuid = repository.create_recipe(new_recipe)
+        repos = get_state_repos(request)
+        new_uuid = repos.recipe_repo.create_recipe(new_recipe)
         if not isinstance(new_uuid, str):
             raise TypeError("The method create_recipe did not return a str.")
     except Exception as e:
@@ -11,9 +14,10 @@ def create_recipe(new_recipe, repository) -> str:
 
     return new_uuid
 
-def get_recipes(repository) -> list[RecipeWrite]:
+def get_recipes(request) -> list[RecipeWrite]:
     try:
-        recipes = repository.list_recipes()
+        repos = get_state_repos(request)
+        recipes = repos.recipe_repo.list_recipes()
         if not isinstance(recipes, list):
             raise TypeError("The method list_recipes did not return a list.")
     except Exception as e:
@@ -22,25 +26,28 @@ def get_recipes(repository) -> list[RecipeWrite]:
     return recipes
 
 
-def get_recipe(uuid: str, repository) -> RecipeWrite:
+def get_recipe(request, uuid: str) -> RecipeWrite:
     try:
-        recipe = repository.get_recipe(uuid)
+        repos = get_state_repos(request)
+        recipe = repos.recipe_repo.get_recipe(uuid)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"An error occurred while get recipe: {e}")
+        raise HTTPException(status_code=500, detail=f"An error occurred while retrieving the recipe: {e}")
 
     if recipe is None:
         raise HTTPException(status_code=404, detail="Recipe not found")
 
     return recipe
 
-def update_recipe(uuid: str, recipe_update: RecipeWrite, repository) -> None:
+def update_recipe(request, uuid: str, recipe_update: RecipeWrite) -> None:
     try:
-        repository.update_recipe(uuid, recipe_update)
+        repos = get_state_repos(request)
+        repos.recipe_repo.update_recipe(uuid, recipe_update)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred while updating the recipe: {e}")
 
-def delete_recipe(uuid: str, repository) -> None:
+def delete_recipe(request, uuid: str) -> None:
     try:
-        repository.delete_recipe(uuid)
+        repos = get_state_repos(request)
+        repos.recipe_repo.delete_recipe(uuid)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred while deleting the recipe: {e}")
