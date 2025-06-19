@@ -1,4 +1,3 @@
-import logging
 import time
 from typing import Any
 
@@ -10,12 +9,14 @@ from starlette.responses import JSONResponse, Response
 from config.config import KEYCLOAK_HOST, KEYCLOAK_REALM, KEYCLOAK_CLIENT_ID, KEYCLOAK_CLIENT_SECRET
 from decorators.log_time import log_time_async
 from services.inmemory_service import get_redis_api_db
+from services.logger_service import Logger
 from utils.path_util import is_unprotected_path
 
 r = get_redis_api_db()
+logger = Logger()
 
 def generate_state_info( token_info: dict ) -> dict:
-    logging.info(f"Token : generate_state_info")
+    logger.info(f"Token : generate_state_info")
     return {
         "user_uuid": token_info.get("sub"),
         "user_display_name": token_info.get("preferred_username"),
@@ -46,7 +47,7 @@ def is_token_active( token_info: dict ) -> bool:
 
 
 def read_cache_token( token: str ) -> Any | None:
-    logging.info(f"Token : read_cache_token")
+    logger.info(f"Token : read_cache_token")
     cached_result = r.get(token)
     if cached_result is not None:
         return eval(cached_result)
@@ -54,14 +55,14 @@ def read_cache_token( token: str ) -> Any | None:
 
 
 def write_cache_token( token: str, cache_token: dict ) -> None:
-    logging.info(f"Token : write_cache_token")
+    logger.info(f"Token : write_cache_token")
     if cache_token.get("exp") is not None:
         ttl = cache_token.get("exp") - int(time.time())
         r.set(token, str(cache_token), ex=ttl)
 
 
 def introspect_token( token: str ) -> dict:
-    logging.info(f"Token : introspect_token")
+    logger.info(f"Token : introspect_token")
     url = f"{KEYCLOAK_HOST}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token/introspect"
     data = {
         "token": token,
@@ -91,7 +92,7 @@ def get_token_info( token: str ) -> dict:
 
 
 def delete_cache_token( token: str ) -> None:
-    logging.info(f"Token : delete_cache_token")
+    logger.info(f"Token : delete_cache_token")
     r.delete(token)
 
 
@@ -111,7 +112,7 @@ def extract_token( request: Request ) -> str:
 
 
 def refresh_cache_token( request: Request ) -> None:
-    logging.info(f"Token : refresh_cache_token")
+    logger.info(f"Token : refresh_cache_token")
     check_headers_token(request)
     token = extract_token(request)
     delete_cache_token(token)
@@ -146,7 +147,7 @@ class TokenVerificationMiddleware(BaseHTTPMiddleware):
 
     @log_time_async
     async def dispatch( self, request: Request, call_next ) -> Response:
-        logging.info("TokenVerificationMiddleware")
+        logger.info("TokenVerificationMiddleware")
 
         try:
             if not is_unprotected_path(request.url.path):
@@ -160,4 +161,3 @@ class TokenVerificationMiddleware(BaseHTTPMiddleware):
             return response
         except HTTPException as exc:
             return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
-

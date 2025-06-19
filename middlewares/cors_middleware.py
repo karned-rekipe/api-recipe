@@ -1,9 +1,11 @@
-import logging
+from services.logger_service import Logger
 from starlette.middleware.cors import CORSMiddleware as StarletteCorsMW
+
+logger = Logger()
 
 class CORSMiddleware(StarletteCorsMW):
     def __init__(self, app):
-        logging.info("Initializing CORSMiddleware")
+        logger.info("Initializing CORSMiddleware")
         super().__init__(
             app=app,
             allow_origins=["*"],
