@@ -1,5 +1,5 @@
 from services import Logger
-from repositories.recipe_mongo_repository import RecipeRepositoryMongo
+from repositories.recipe_repository_mongo import RecipeRepositoryMongo
 
 logger = Logger()
 
