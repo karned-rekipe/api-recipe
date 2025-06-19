@@ -8,7 +8,7 @@ from starlette.responses import JSONResponse, Response
 from decorators.log_time import log_time_async
 from middlewares.token_middleware import read_cache_token, write_cache_token
 from services.inmemory_service import get_redis_api_db
-from services.logger_service import Logger
+from services import Logger
 from utils.path_util import is_unprotected_path, is_unlicensed_path
 from config.config import URL_API_GATEWAY
 
@@ -109,11 +109,11 @@ def extract_entity(request: Request) -> str:
 
 class LicenceVerificationMiddleware(BaseHTTPMiddleware):
     def __init__(self, app):
+        logger.init("Initializing LicenceVerificationMiddleware")
         super().__init__(app)
 
     @log_time_async
     async def dispatch(self, request: Request, call_next) -> Response:
-        logger.info("LicenceVerificationMiddleware")
         try:
             if not is_unprotected_path(request.url.path) and not is_unlicensed_path(request.url.path):
                 check_headers_licence(request)

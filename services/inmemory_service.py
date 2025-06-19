@@ -1,5 +1,5 @@
 import redis
-from services.logger_service import Logger
+from services import Logger
 from redis.exceptions import ConnectionError, TimeoutError, AuthenticationError, RedisError
 from config.config import REDIS_DB, REDIS_HOST, REDIS_PASSWORD, REDIS_PORT
 
@@ -35,6 +35,7 @@ class RedisFallback:
 
 def get_redis_api_db():
     try:
+        logger.connect("Connecting to Redis")
         return redis.Redis(
             host=REDIS_HOST,
             db=REDIS_DB,

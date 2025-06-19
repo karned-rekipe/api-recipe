@@ -52,10 +52,12 @@ def check_repo( repo ):
 
 
 class DBConnectionMiddleware(BaseHTTPMiddleware):
+    def __init__(self, app):
+        logger.init("Initializing DBConnectionMiddleware")
+        super().__init__(app)
+
     @log_time_async
     async def dispatch( self, request: Request, call_next ):
-        logger.info("DBConnectionMiddleware")
-
         try:
             if not is_unprotected_path(request.url.path):
                 token = extract_token(request)

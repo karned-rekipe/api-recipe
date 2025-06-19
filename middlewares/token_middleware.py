@@ -9,7 +9,7 @@ from starlette.responses import JSONResponse, Response
 from config.config import KEYCLOAK_HOST, KEYCLOAK_REALM, KEYCLOAK_CLIENT_ID, KEYCLOAK_CLIENT_SECRET
 from decorators.log_time import log_time_async
 from services.inmemory_service import get_redis_api_db
-from services.logger_service import Logger
+from services import Logger
 from utils.path_util import is_unprotected_path
 
 r = get_redis_api_db()
@@ -143,12 +143,11 @@ def check_token( token_info ) -> None:
 
 class TokenVerificationMiddleware(BaseHTTPMiddleware):
     def __init__( self, app ):
+        logger.init("Initializing TokenVerificationMiddleware")
         super().__init__(app)
 
     @log_time_async
     async def dispatch( self, request: Request, call_next ) -> Response:
-        logger.info("TokenVerificationMiddleware")
-
         try:
             if not is_unprotected_path(request.url.path):
                 check_headers_token(request)
