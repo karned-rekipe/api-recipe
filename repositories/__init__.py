@@ -1,4 +1,4 @@
-from shared.services.v0 import Logger
+from common_api.services.v0 import Logger
 from repositories.recipe_repository_mongo import RecipeRepositoryMongo
 
 logger = Logger()

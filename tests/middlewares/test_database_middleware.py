@@ -3,7 +3,7 @@ from unittest.mock import patch, MagicMock, AsyncMock
 from fastapi import HTTPException, Request
 from starlette.responses import JSONResponse
 
-from shared.middlewares.v1.database_middleware import (
+from common_api.middlewares.v1.database_middleware import (
     read_cache_credential, write_cache_credential, get_credential,
     check_repo, DBConnectionMiddleware
 )

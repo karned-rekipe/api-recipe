@@ -3,14 +3,14 @@ from fastapi.openapi.utils import get_openapi
 from fastapi.security import HTTPBearer
 
 from config.config import *
-from shared.middlewares.v1 import http_exception_handler
-from shared.middlewares.v1 import TokenVerificationMiddleware
-from shared.middlewares.v1 import DBConnectionMiddleware
-from shared.middlewares.v1 import LicenceVerificationMiddleware
-from shared.middlewares.v1 import CORSMiddleware
+from common_api.middlewares.v1 import http_exception_handler
+from common_api.middlewares.v1 import TokenVerificationMiddleware
+from common_api.middlewares.v1 import DBConnectionMiddleware
+from common_api.middlewares.v1 import LicenceVerificationMiddleware
+from common_api.middlewares.v1 import CORSMiddleware
 from routers import v1
-from shared.services.v0 import Logger
-from shared.config import init_config
+from common_api.services.v0 import Logger
+from common_api.config import init_config
 
 logger = Logger()
 logger.start(f"Starting {API_NAME} Service")
