@@ -9,7 +9,7 @@ from shared.middlewares.v1 import DBConnectionMiddleware
 from shared.middlewares.v1 import LicenceVerificationMiddleware
 from shared.middlewares.v1 import CORSMiddleware
 from routers import v1
-from services import Logger
+from shared.services.v0 import Logger
 from shared.config import init_config
 
 logger = Logger()
