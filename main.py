@@ -68,7 +68,7 @@ app.openapi = custom_openapi
 app.add_middleware(DBConnectionMiddleware)
 app.add_middleware(LicenceVerificationMiddleware)
 app.add_middleware(TokenVerificationMiddleware)
-app.add_middleware(CORSMiddleware)
+#app.add_middleware(CORSMiddleware)
 app.add_exception_handler(HTTPException, http_exception_handler)
 
 app.include_router(v1.router)
