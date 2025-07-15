@@ -20,7 +20,7 @@ router = APIRouter(
 @check_permissions(['create'])
 async def create_new_recipe(request: Request, recipe: RecipeWrite) -> dict:
     logger.api("POST /recipe/v1/")
-    recipe.created_by = request.state.token_info.get('user_id')
+    recipe.created_by = request.state.token_info.get('user_uuid')
     new_uuid = create_recipe(request, recipe)
     return {"uuid": new_uuid}
 
