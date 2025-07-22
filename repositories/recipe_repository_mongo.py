@@ -61,7 +61,9 @@ class RecipeRepositoryMongo(RecipeRepository):
         return recipes
 
     def update_recipe(self, uuid: str, recipe_update: RecipeWrite) -> None:
-        update_data = {"$set": recipe_update.model_dump()}
+        update_fields = recipe_update.model_dump()
+        update_fields.pop('created_by', None)
+        update_data = {"$set": update_fields}
         self.db[self.collection].find_one_and_update({"_id": uuid}, update_data)
 
 
