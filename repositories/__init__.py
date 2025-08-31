@@ -15,3 +15,7 @@ def get_repositories(uri):
         )
 
     return Repositories
+
+def get_bucket_repositories(*args, **kwargs):
+    """Stub for compatibility with common_api. Update implementation as needed."""
+    raise NotImplementedError("get_bucket_repositories is not implemented. Use get_repositories or implement as needed.")
