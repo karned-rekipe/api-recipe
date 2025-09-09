@@ -8,6 +8,7 @@ def recipe_serial(recipe) -> dict:
         "name": recipe["name"],
         "description": recipe.get("description"),
         "price": recipe.get("price"),
+        "difficulty": recipe.get("difficulty"),
         "quantity": recipe.get("quantity"),
         "number_of_persons": recipe.get("number_of_persons"),
         "origin_country": recipe.get("origin_country"),

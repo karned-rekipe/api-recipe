@@ -9,6 +9,7 @@ def test_recipe_creation():
         "name": "Recipe Name",
         "description": "This is a recipe description.",
         "price": 10.99,
+        "difficulty": 3,
         "quantity": 2,
         "number_of_persons": 4,
         "origin_country": "France",
@@ -30,6 +31,7 @@ def test_recipe_creation():
     assert recipe.name == "Recipe Name"
     assert recipe.description == "This is a recipe description."
     assert recipe.price == 10.99
+    assert recipe.difficulty == 3
     assert recipe.quantity == 2
     assert recipe.number_of_persons == 4
     assert recipe.origin_country == "France"
@@ -50,6 +52,7 @@ def test_recipe_creation_with_defaults():
     assert recipe.name == "Minimal Recipe"
     assert recipe.description is None
     assert recipe.price is None
+    assert recipe.difficulty is None
     assert recipe.quantity is None
     assert recipe.number_of_persons is None
     assert recipe.origin_country is None
@@ -191,3 +194,19 @@ def test_recipe_invalid_list_types():
     }
     with pytest.raises(ValidationError):
         RecipeWrite(**invalid_recipe_data)
+
+def test_recipe_invalid_difficulty_type():
+    invalid_recipe_data = {
+        "name": "Invalid Recipe",
+        "difficulty": "hard"
+    }
+    with pytest.raises(ValidationError):
+        RecipeWrite(**invalid_recipe_data)
+
+def test_recipe_valid_difficulty():
+    valid_recipe_data = {
+        "name": "Valid Recipe",
+        "difficulty": 5
+    }
+    recipe = RecipeWrite(**valid_recipe_data)
+    assert recipe.difficulty == 5

@@ -8,6 +8,7 @@ class RecipeRead(BaseModel):
     name: str
     description: Optional[str] = None
     price: Optional[float] = None
+    difficulty: Optional[int] = None
     quantity: Optional[int] = None
     number_of_persons: Optional[int] = Field(None, gt=0, description="Number of persons the recipe serves")
     origin_country: Optional[str] = None
@@ -24,6 +25,7 @@ class RecipeWrite(BaseModel):
     name: str
     description: Optional[str] = None
     price: Optional[float] = None
+    difficulty: Optional[int] = None
     quantity: Optional[int] = None
     number_of_persons: Optional[int] = Field(None, gt=0, description="Number of persons the recipe serves")
     origin_country: Optional[str] = None
