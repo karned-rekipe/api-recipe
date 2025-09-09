@@ -44,8 +44,8 @@ async def test_create_new_item(mock_check_permissions, mock_request):
         item = RecipeWrite(name="Test Item")
 
         # Call the endpoint function directly
-        from routers.v1 import create_new_item
-        result = await create_new_item(mock_req, item)
+        from routers.v1 import create_new_recipe
+        result = await create_new_recipe(mock_req, item)
 
         # Verify the result
         assert result == {"uuid": "test-uuid"}
