@@ -1,11 +1,11 @@
 from fastapi import HTTPException
-from models.recipe_model import RecipeWrite
-from models.step_model import Step
+from models.recipe_model import RecipeWrite, RecipeRead
+from models.step_model import StepWrite
 from common_api.utils.v0 import get_state_repos
 from typing import Optional
 
 
-def _compute_step_duration(step: Step) -> Optional[int]:
+def _compute_step_duration(step: StepWrite) -> Optional[int]:
     """
     Compute duration of a step as the sum of cooking_time, rest_duration and preparation_time.
     Treat missing/None values as 0. Returns None if all three are None (keeps duration unset),
@@ -40,7 +40,7 @@ def create_recipe(request, new_recipe) -> str:
 
     return new_uuid
 
-def get_recipes(request) -> list[RecipeWrite]:
+def get_recipes(request) -> list[RecipeRead]:
     try:
         repos = get_state_repos(request)
         recipes = repos.recipe_repo.list_recipes()
