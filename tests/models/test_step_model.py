@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from models.step_model import Step
+from models.step_model import StepWrite
 
 
 def test_step_creation():
@@ -10,7 +10,7 @@ def test_step_creation():
         "description": "First step",
         "duration": "10 min"
     }
-    step = Step(**step_data)
+    step = StepWrite(**step_data)
     assert step.step_number == 1
     assert step.description == "First step"
     assert step.duration == "10 min"
@@ -21,7 +21,7 @@ def test_step_creation_without_duration():
         "step_number": 2,
         "description": "Second step"
     }
-    step = Step(**step_data)
+    step = StepWrite(**step_data)
     assert step.step_number == 2
     assert step.description == "Second step"
     assert step.duration is None
@@ -33,7 +33,7 @@ def test_step_validation_error():
         "description": "Invalid step"
     }
     with pytest.raises(ValidationError):
-        Step(**invalid_step_data)
+        StepWrite(**invalid_step_data)
 
 
 def test_step_missing_fields():
@@ -41,4 +41,4 @@ def test_step_missing_fields():
         "step_number": 3
     }
     with pytest.raises(ValidationError):
-        Step(**incomplete_step_data)
+        StepWrite(**incomplete_step_data)
