@@ -1,5 +1,4 @@
-from schemas.ingredient_schema import list_ingredient_serial
-from schemas.step_schema import list_step_serial
+from schemas.process_schema import list_process_serial
 
 
 def recipe_serial(recipe) -> dict:
@@ -13,9 +12,7 @@ def recipe_serial(recipe) -> dict:
         "number_of_persons": recipe.get("number_of_persons"),
         "origin_country": recipe.get("origin_country"),
         "attributes": recipe.get("attributes", []),
-        "utensils": recipe.get("utensils", []),
-        "ingredients": list_ingredient_serial(recipe.get("ingredients", [])),
-        "steps": list_step_serial(recipe.get("steps", [])),
+        "process": list_process_serial(recipe.get("process", [])),
         "thumbnail_url": recipe.get("thumbnail_url"),
         "large_image_url": recipe.get("large_image_url"),
         "source_reference": recipe.get("source_reference"),
